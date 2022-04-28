@@ -26,8 +26,8 @@ namespace AngularProject.Models
         [ForeignKey("Category")]
         //foriegn
         public int CategoryId { get; set; }
-    
         [JsonIgnore]
+
         public virtual Category Category { get; set; }
         [Required]
         public string? ImageUrl { get; set; }
