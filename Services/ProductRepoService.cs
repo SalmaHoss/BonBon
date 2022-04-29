@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AngularProject.Services
 {
-    public class ProductRepoService:IProductRepository
+    public class ProductRepoService:IProductService
     {
         public ApplicationDbContext Context { get; set; }
         public ProductRepoService(ApplicationDbContext context)

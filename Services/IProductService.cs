@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AngularProject.Services
 {
-    public interface IProductRepository
+    public interface IProductService
     {
         public List<Product> GetAll();
         public Product GetDetails(int id);

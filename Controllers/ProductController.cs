@@ -12,10 +12,10 @@ namespace AngularProject.Controllers
     [Authorize]
     public class ProductController : ControllerBase
     {
-        public IProductRepository ProductRepository { get; set; }
+        public IProductService ProductRepository { get; set; }
 
         // request service of type "IStudentRepository"
-        public ProductController(IProductRepository _ProductRepository)
+        public ProductController(IProductService _ProductRepository)
         {
             ProductRepository = _ProductRepository;
         }
