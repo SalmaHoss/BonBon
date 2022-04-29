@@ -37,7 +37,6 @@ namespace AngularProject.Controllers
 
                 if (result.IsSuccess)
                 {
-                    //await _mailService.SendEmailAsync(model.Email, "New login", "<h1>Hey!, new login to your account noticed</h1><p>New login to your account at " + DateTime.Now + "</p>");
                     return Ok(result);
                 }
 
