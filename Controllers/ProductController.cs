@@ -1,5 +1,6 @@
 ﻿using AngularProject.Models;
 using AngularProject.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -8,6 +9,7 @@ namespace AngularProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductController : ControllerBase
     {
         public IProductRepository ProductRepository { get; set; }
@@ -25,6 +27,9 @@ namespace AngularProject.Controllers
         {
             return ProductRepository.GetAll();
         }
+
+        //TODO : Products with promotions ===> allow anonymous 
+
 
         // GET api/<ProductController>/5
         [HttpGet("{id}")]

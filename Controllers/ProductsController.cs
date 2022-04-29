@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AngularProject.Areas.Identity.Data;
 using AngularProject.Models;
+using System.Security.Claims;
 
 namespace AngularProject.Controllers
 {
@@ -15,17 +15,20 @@ namespace AngularProject.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public ProductsController(AppDbContext context)
+        public ProductsController(ApplicationDbContext context)
         {
             _context = context;
         }
 
         // GET: api/Products
+        //[HttpGet(Name = "GetProducts")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier);
+
             return await _context.Products.Include("Category").ToListAsync();
         }
 

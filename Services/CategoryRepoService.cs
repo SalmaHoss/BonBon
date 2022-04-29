@@ -1,5 +1,4 @@
-﻿using AngularProject.Areas.Identity.Data;
-using AngularProject.Models;
+﻿using AngularProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,8 +6,8 @@ namespace AngularProject.Services
 {
     public class CategoryRepoService:ICategoryRepository
     {
-        public AppDbContext Context { get; set; }
-        public CategoryRepoService(AppDbContext context)
+        public ApplicationDbContext Context { get; set; }
+        public CategoryRepoService(ApplicationDbContext context)
         {
             Context = context;
         }

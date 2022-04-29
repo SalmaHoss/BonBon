@@ -1,5 +1,4 @@
-﻿using AngularProject.Areas.Identity.Data;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AngularProject.Models
@@ -11,11 +10,11 @@ namespace AngularProject.Models
         public int Id { get; set; }
 
         public DateTime OrderDate { get; set; }
-        public string UserId { get; set; }
+        public int UserId { get; set; }
 
 
         [ForeignKey(nameof(UserId))]
-        public AppUser User { get; set; }
+        public User User { get; set; }
 
         public virtual List<OrderProduct> OrderProducts { get; set; }
 

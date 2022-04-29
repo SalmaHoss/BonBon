@@ -1,5 +1,4 @@
-﻿using AngularProject.Areas.Identity.Data;
-using AngularProject.Models;
+﻿using AngularProject.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,8 +6,8 @@ namespace AngularProject.Services
 {
     public class ProductRepoService:IProductRepository
     {
-        public AppDbContext Context { get; set; }
-        public ProductRepoService(AppDbContext context)
+        public ApplicationDbContext Context { get; set; }
+        public ProductRepoService(ApplicationDbContext context)
         {
             Context = context;
         }
