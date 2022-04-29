@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using AngularProject.Areas.Identity.Data;
+using AngularProject.Data.Cart;
+
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DbContextConnection");;
 
@@ -20,8 +22,12 @@ Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(); 
+builder.Services.AddSwaggerGen();
 
+//Session and shopping car
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
+builder.Services.AddSession();
 //2
 
 builder.Services.AddCors(options =>
@@ -52,6 +58,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.UseSession();
 //4
 app.UseCors(MyAllowSpecificOrigins);
 app.Run();
