@@ -18,11 +18,11 @@ namespace AngularProject.Models
 
         [Required]
         public decimal Price { get; set; }
-        
+
+
         [Required]
         public int Quantity { get; set; }
 
-        
         [ForeignKey("Category")]
         //foriegn
         public int CategoryId { get; set; }
