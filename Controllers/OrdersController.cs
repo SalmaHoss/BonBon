@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AngularProject.Models;
 using AngularProject.Data.Cart;
+using AngularProject.Services;
 
 namespace AngularProject.Controllers
 {
@@ -18,18 +19,27 @@ namespace AngularProject.Controllers
         //Add private readonly IProductService _productService;
         private readonly ShoppingCart _shoppingCart;
 
-        private readonly AppDbContext _context;
+        private readonly ApplicationDbContext _context;
 
-        public OrdersController(ShoppingCart shoppingCart /*IProductService _productService*/)
+        public OrdersController(ShoppingCart shoppingCart, IProductRepository _productService)
         {
             _shoppingCart = shoppingCart;
-           // _productService = productService;
+            // _productService = productService;
         }
 
-        [HttpGet]
-        public  async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        public static ShoppingCart GetShoppingCart(IServiceProvider serviceProvider)
         {
-            return  await _
+            ISession session = serviceProvider.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
+            var context = serviceProvider.GetService<ApplicationDbContext>();
+            string CartId = session.GetString("CartID") ?? Guid.NewGuid().ToString();
+            session.SetString("CartId", CartId);
+            return new ShoppingCart(context) { ShoppingCartId = CartId };
+
+        }
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        {
+            return await _
                 //_shoppingCart.GetShoppingCartProducts();
         }
 
