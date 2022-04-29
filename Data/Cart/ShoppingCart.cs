@@ -1,4 +1,4 @@
-﻿using AngularProject.Areas.Identity.Data;
+﻿
 using AngularProject.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,9 +12,9 @@ namespace AngularProject.Data.Cart
          public string ShoppingCartId { get; set; }
          public  List<ShoppingCartProduct> ShoppingCartProducts {get;set;}
          //Is He gonna use services?
-         public AppDbContext _Context { get; set; }
+         public ApplicationDbContext _Context { get; set; }
 
-        public ShoppingCart(AppDbContext context)
+        public ShoppingCart(ApplicationDbContext context)
         {
             _Context = context;
         }
@@ -24,7 +24,7 @@ namespace AngularProject.Data.Cart
         public static ShoppingCart GetShoppingCart(IServiceProvider service)
         {    //If this is not null
             ISession? session = service.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
-            var ctxt = service.GetService<AppDbContext>();
+            var ctxt = service.GetService<ApplicationDbContext>();
             string cartId = session.GetString("CartId") ?? Guid.NewGuid().ToString();
             session.SetString("CartId", cartId);
             return new ShoppingCart(ctxt) { ShoppingCartId = cartId };

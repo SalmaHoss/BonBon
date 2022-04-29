@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AngularProject.Areas.Identity.Data;
 using AngularProject.Models;
 using AngularProject.Data.Cart;
 
