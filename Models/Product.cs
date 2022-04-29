@@ -22,7 +22,7 @@ namespace AngularProject.Models
         [Required]
         public int Quantity { get; set; }
 
-        [Required]
+        
         [ForeignKey("Category")]
         //foriegn
         public int CategoryId { get; set; }

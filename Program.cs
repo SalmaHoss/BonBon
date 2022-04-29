@@ -1,16 +1,26 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using AngularProject.Areas.Identity.Data;
+using AngularProject.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DbContextConnection");;
 
+ 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(connectionString));;
+    options.UseSqlServer(connectionString));
+
 
 builder.Services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<AppDbContext>();
 
+
+
 // Add services to the container.
+builder.Services.AddScoped<ICategoryRepository, CategoryRepoService>();
+builder.Services.AddScoped<IProductRepository, ProductRepoService>();
+
+
 
 //3
 var MyAllowSpecificOrigins = "_MyAllowSpecificOrigins";
