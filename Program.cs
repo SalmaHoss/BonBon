@@ -25,7 +25,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<ICategoryRepository, CategoryRepoService>();
 builder.Services.AddScoped<IProductService, ProductRepoService>();
 builder.Services.AddScoped<IUserService, UserService>();
-
+builder.Services.AddScoped<IOrdersService, OrderService>();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
