@@ -21,6 +21,7 @@ namespace AngularProject.Data.Cart
 
 
         //to be used in program
+        
         public static ShoppingCart GetShoppingCart(IServiceProvider service)
         {    //If this is not null
             ISession? session = service.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
@@ -61,7 +62,7 @@ namespace AngularProject.Data.Cart
         }
 
 
-        public void RemoveProductToCart(Product product)
+        public void RemoveProductFromCart(Product product)
         {
             var shoppingCartProduct = _Context.ShoppingCartProducts.FirstOrDefault(n => n.Product.Id == product.Id && n.ShoppingCartId == ShoppingCartId);
             if (shoppingCartProduct != null)

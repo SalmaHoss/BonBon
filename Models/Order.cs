@@ -16,6 +16,7 @@ namespace AngularProject.Models
         [ForeignKey(nameof(UserId))]
         public User User { get; set; }
 
+        public string Email { get; set; }
         public virtual List<OrderProduct> OrderProducts { get; set; }
 
     }
