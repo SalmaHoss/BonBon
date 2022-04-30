@@ -18,7 +18,7 @@ namespace AngularProject.Controllers
         //Add private readonly IProductService _productService;
         private readonly ShoppingCart _shoppingCart;
 
-        private readonly AppDbContext _context;
+        private readonly ApplicationDbContext _context;
 
         public OrdersController(ShoppingCart shoppingCart /*IProductService _productService*/)
         {
@@ -27,11 +27,11 @@ namespace AngularProject.Controllers
         }
 
         [HttpGet]
-        public  async Task<ActionResult<IEnumerable<Order>>> GetOrders()
-        {
-            return  await _
-                //_shoppingCart.GetShoppingCartProducts();
-        }
+        //public  async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        //{
+        //    return  await _
+        //        //_shoppingCart.GetShoppingCartProducts();
+        //}
 
         // GET: api/Products/5
         [HttpGet("{id}")]

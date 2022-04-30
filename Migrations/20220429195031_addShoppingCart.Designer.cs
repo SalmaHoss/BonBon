@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AngularProject.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
+    [DbContext(typeof(ApplDbContext))]
     [Migration("20220429195031_addShoppingCart")]
     partial class addShoppingCart
     {

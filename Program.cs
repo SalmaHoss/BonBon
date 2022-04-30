@@ -23,7 +23,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 // Add services to the container.
 builder.Services.AddScoped<ICategoryRepository, CategoryRepoService>();
-builder.Services.AddScoped<IProductService, ProductRepoService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>

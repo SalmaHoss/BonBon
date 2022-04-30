@@ -5,10 +5,11 @@ namespace AngularProject.Services
 {
     public interface IProductService
     {
-        public List<Product> GetAll();
-        public Product GetDetails(int id);
-        public Task<ActionResult<Product>> Insert(Product pro);
-        public void Update(int id, Product pro);
-        public void Delete(int id);
+        public Task<IEnumerable<Product>> GetAll();
+        public Task<Product> GetDetails(int id);
+        public Task<Product> Update(int id, Product product);
+        public Task<Product> Insert(Product product);
+        public Task<Product> Delete(int id);
+
     }
 }
