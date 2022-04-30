@@ -29,14 +29,14 @@ namespace AngularProject.Services
                 throw new NullReferenceException("Register Model is null");
 
             }
-            //if(model.Password != model.ConfirmPassword)
-            //{
-            //    return new UserManagerResponse
-            //    {
-            //        Message = "Confirm password doesn't match the password",
-            //        IsSuccess = false
-            //    };
-            //}
+            if (model.Password != model.ConfirmPassword)
+            {
+                return new UserManagerResponse
+                {
+                    Message = "Confirm password doesn't match the password",
+                    IsSuccess = false
+                };
+            }
             var Identityuser = new IdentityUser
             {
                 Email = model.Email,
