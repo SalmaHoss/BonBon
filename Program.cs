@@ -60,9 +60,11 @@ Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+/*
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
 builder.Services.AddSession();
+*/
 //2
 
 builder.Services.AddCors(options =>
@@ -95,4 +97,5 @@ app.MapControllers();
 
 //4
 app.UseCors(MyAllowSpecificOrigins);
+//app.UseSession();
 app.Run();
