@@ -44,11 +44,11 @@ namespace AngularProject.Controllers
         //        //_shoppingCart.GetShoppingCartProducts();
         //}
 =======
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+      /*  public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
             return await _
                 //_shoppingCart.GetShoppingCartProducts();
-        }
+        }*/
 
 
         // GET: api/Products/5
