@@ -19,12 +19,12 @@ namespace AngularProject.Controllers
     {
         //Add private readonly IProductService _productService;
         private readonly ShoppingCart _shoppingCart;
-        private readonly ProductService _productService;
-        private readonly OrderService _orderService;
+        private readonly IProductService _productService;
+        private readonly IOrderService _orderService;
 
         public OrdersController(ShoppingCart shoppingCart,
-            ProductService productService,
-            OrderService orderService)
+            IProductService productService,
+            IOrderService orderService)
         {
             _shoppingCart = shoppingCart;
             _productService = productService;
@@ -48,15 +48,15 @@ namespace AngularProject.Controllers
         {
             var products = _shoppingCart.GetShoppingCartProducts();
             _shoppingCart.ShoppingCartProducts = products;
-            var response = new ShoppingCartVM()
-            {
-                ShoppingCart = _shoppingCart,
-                ShoppingCartTotal = (double)_shoppingCart.GetShoppingCartTotal()
-            };
-            return Ok(response);
+            //var response = new ShoppingCartVM()
+            //{
+            //    ShoppingCart = _shoppingCart,
+            //    ShoppingCartTotal = (double)_shoppingCart.GetShoppingCartTotal()
+            //};
+            return Ok(products);
         }
 
-        [HttpPost("AddItem{id}")]
+        [HttpPost("AddItem/{id}")]
         public async Task<IActionResult> AddToShoppingCart(int id)
         {
             var product = await _productService.GetDetails(id);
@@ -69,7 +69,7 @@ namespace AngularProject.Controllers
 
         }
 
-        [HttpPost("RemoveItem{id}")]
+        [HttpPost("RemoveItem/{id}")]
         public async Task<IActionResult> RemoveItemFromShoppingCart(int id)
         {
             var product = await _productService.GetDetails(id);
@@ -83,7 +83,7 @@ namespace AngularProject.Controllers
 
         }
 
-        [HttpGet("completerOrder{id}")]
+        [HttpPost("completerOrder/{id}")]
         public async Task<IActionResult> CompleteOrder(int id)
         {
             var products = _shoppingCart.GetShoppingCartProducts();
