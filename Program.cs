@@ -25,7 +25,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<ICategoryRepository, CategoryRepoService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddScoped<IOrdersService, OrderService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
@@ -50,6 +51,7 @@ builder.Services.AddAuthentication(auth => {
     };
 
 });
+
 
 //3
 var MyAllowSpecificOrigins = "_MyAllowSpecificOrigins";
@@ -78,6 +80,14 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddDistributedMemoryCache();
+
+builder.Services.AddSession(options =>
+{
+    //options.IdleTimeout = TimeSpan.FromSeconds(10);
+    //options.Cookie.HttpOnly = true;
+    //options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
@@ -91,6 +101,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();;
 
+app.UseSession();
 app.UseAuthorization();
 
 app.MapControllers();

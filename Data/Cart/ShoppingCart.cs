@@ -44,7 +44,7 @@ namespace AngularProject.Data.Cart
         public void AddProductToCart(Product product)
         {
             var shoppingCartProduct = _Context.ShoppingCartProducts.FirstOrDefault(n => n.Product.Id == product.Id && n.ShoppingCartId == ShoppingCartId);
-            if(shoppingCartProduct != null)
+            if(shoppingCartProduct == null)
             {
                 shoppingCartProduct = new ShoppingCartProduct()
                 {

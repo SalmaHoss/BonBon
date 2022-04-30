@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AngularProject.Services
 {
-    public class OrderService : IOrdersService
+    public class OrderService : IOrderService
     {
         private readonly ApplicationDbContext _context;
 
