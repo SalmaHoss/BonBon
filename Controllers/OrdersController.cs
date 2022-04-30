@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using AngularProject.Models;
 using AngularProject.Data.Cart;
 using AngularProject.Services;
+using AngularProject.ViewModels;
 
 namespace AngularProject.Controllers
 {
@@ -18,32 +19,113 @@ namespace AngularProject.Controllers
     {
         //Add private readonly IProductService _productService;
         private readonly ShoppingCart _shoppingCart;
+        private readonly ProductService _productService;
+        private readonly OrderService _orderService;
 
-        private readonly ApplicationDbContext _context;
-
-        public OrdersController(ShoppingCart shoppingCart, IProductRepository _productService)
+        public OrdersController(ShoppingCart shoppingCart,
+            ProductService productService,
+            OrderService orderService)
         {
             _shoppingCart = shoppingCart;
-            // _productService = productService;
+            _productService = productService;
+            _orderService = orderService;
         }
 
-        public static ShoppingCart GetShoppingCart(IServiceProvider serviceProvider)
-        {
-            ISession session = serviceProvider.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
-            var context = serviceProvider.GetService<ApplicationDbContext>();
-            string CartId = session.GetString("CartID") ?? Guid.NewGuid().ToString();
-            session.SetString("CartId", CartId);
-            return new ShoppingCart(context) { ShoppingCartId = CartId };
-
-        }
         [HttpGet]
+        public async Task<IActionResult> getAllOrders()
+        {
+            //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //string userRole = User.FindFirstValue(ClaimTypes.Role);
+            //var orders = await orderRepository.GetOrderByUserIdRoleAsync(userId, userRole);
 
-        //public  async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+            var orders = await _orderService.GetAllOrders();
+            return Ok(orders);
+            
+        }
+
+        [HttpGet("GetShoppingCartItems")]
+        public IActionResult GetShoppingCartItems()
+        {
+            var products = _shoppingCart.GetShoppingCartProducts();
+            _shoppingCart.ShoppingCartProducts = products;
+            var response = new ShoppingCartVM()
+            {
+                ShoppingCart = _shoppingCart,
+                ShoppingCartTotal = (double)_shoppingCart.GetShoppingCartTotal()
+            };
+            return Ok(response);
+        }
+
+        [HttpPost("AddItem{id}")]
+        public async Task<IActionResult> AddToShoppingCart(int id)
+        {
+            var product = await _productService.GetDetails(id);
+
+            if (product!= null)
+            {
+                _shoppingCart.AddProductToCart(product);
+            }
+            return NoContent();
+
+        }
+
+        [HttpPost("RemoveItem{id}")]
+        public async Task<IActionResult> RemoveItemFromShoppingCart(int id)
+        {
+            var product = await _productService.GetDetails(id);
+
+            if (product != null)
+            {
+                _shoppingCart.RemoveProductFromCart(product);
+            }
+            return NoContent();
+            
+
+        }
+
+        [HttpGet("completerOrder{id}")]
+        public async Task<IActionResult> CompleteOrder(int id)
+        {
+            var products = _shoppingCart.GetShoppingCartProducts();
+            //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            await _orderService.StoreOrder(products, id);
+            await _shoppingCart.ClearShoppingCartAsync();
+
+            return NoContent();
+        }
+
+        //public IActionResult CompleteOrder()
         //{
-        //    return  await _
-        //        //_shoppingCart.GetShoppingCartProducts();
-        //}
-=======
+        //    var items = shoppingCart.GetShoppingCartItems();
+        //    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        //    string userEmailAddress = User.FindFirstValue(ClaimTypes.Email);
+
+//     orderRepository.StoreOrderAsync(items, userId, userEmailAddress);
+//     shoppingCart.ClearShoppingCartAsync();
+
+//    return View("OrderCompleted");
+//}
+
+
+
+//public static ShoppingCart GetShoppingCart(IServiceProvider serviceProvider)
+//{
+//    ISession session = serviceProvider.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
+//    var context = serviceProvider.GetService<ApplicationDbContext>();
+//    string CartId = session.GetString("CartID") ?? Guid.NewGuid().ToString();
+//    session.SetString("CartId", CartId);
+//    return new ShoppingCart(context) { ShoppingCartId = CartId };
+
+//}
+//[HttpGet]
+
+//public  async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+//{
+//    return  await _
+//        //_shoppingCart.GetShoppingCartProducts();
+//}
+
       /*  public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
             return await _
@@ -52,80 +134,80 @@ namespace AngularProject.Controllers
 
 
         // GET: api/Products/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Product>> GetProduct(int id)
-        {
-            var product = await _context.Products.FindAsync(id);
+        //[HttpGet("{id}")]
+        //public async Task<ActionResult<Product>> GetProduct(int id)
+        //{
+        //    var product = await _context.Products.FindAsync(id);
 
-            if (product == null)
-            {
-                return NotFound();
-            }
+        //    if (product == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return product;
-        }
+        //    return product;
+        //}
 
         // PUT: api/Orders/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(int id, Order order)
-        {
-            if (id != order.Id)
-            {
-                return BadRequest();
-            }
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> PutOrder(int id, Order order)
+        //{
+        //    if (id != order.Id)
+        //    {
+        //        return BadRequest();
+        //    }
 
-            _context.Entry(order).State = EntityState.Modified;
+        //    _context.Entry(order).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!OrderExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!OrderExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
-        // POST: api/Orders
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
-        {
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
+        //// POST: api/Orders
+        //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        //[HttpPost]
+        //public async Task<ActionResult<Order>> PostOrder(Order order)
+        //{
+        //    _context.Orders.Add(order);
+        //    await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetOrder", new { id = order.Id }, order);
-        }
+        //    return CreatedAtAction("GetOrder", new { id = order.Id }, order);
+        //}
 
-        // DELETE: api/Orders/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteOrder(int id)
-        {
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
+        //// DELETE: api/Orders/5
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteOrder(int id)
+        //{
+        //    var order = await _context.Orders.FindAsync(id);
+        //    if (order == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
+        //    _context.Orders.Remove(order);
+        //    await _context.SaveChangesAsync();
 
-            return NoContent();
-        }
+        //    return NoContent();
+        //}
 
-        private bool OrderExists(int id)
-        {
-            return _context.Orders.Any(e => e.Id == id);
-        }
+        //private bool OrderExists(int id)
+        //{
+        //    return _context.Orders.Any(e => e.Id == id);
+        //}
     }
 }

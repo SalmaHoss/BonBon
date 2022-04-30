@@ -7,8 +7,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AngularProject.Models;
-using System.Security.Claims;
-using AngularProject.Services;
 
 namespace AngularProject.Controllers
 {
@@ -16,79 +14,95 @@ namespace AngularProject.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private ProductService ProductServices;
+        private readonly ApplicationDbContext _context;
 
-        public ProductsController(ProductService _ProductServices)
+        public ProductsController(ApplicationDbContext context)
         {
-            ProductServices = _ProductServices;
+            _context = context;
         }
 
         // GET: api/Products
-        //[HttpGet(Name = "GetProducts")]
-        [HttpPost("")]
-        public ActionResult<IEnumerable<Product>> GetProducts()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            //var userId = User.FindFirst(ClaimTypes.NameIdentifier);
-
-            return Ok(ProductServices.GetAll());
-
-
+            return await _context.Products.Include("Category").ToListAsync();
         }
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public ActionResult<Product> GetProduct(int id)
+        public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = ProductServices.GetDetails(id);
+            var product = await _context.Products.FindAsync(id);
 
             if (product == null)
             {
                 return NotFound();
             }
 
-            return Ok(product);
+            return product;
         }
 
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public ActionResult<Product> PutProduct(int id, Product product)
+        public async Task<IActionResult> PutProduct(int id, Product product)
         {
             if (id != product.Id)
             {
                 return BadRequest();
             }
 
-            var Product = ProductServices.Update(id, product);
+            _context.Entry(product).State = EntityState.Modified;
 
-            if(product == null)return BadRequest();
-            else return Ok(Product);
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProductExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public ActionResult<Product> PostProduct(Product product)
+        public async Task<ActionResult<Product>> PostProduct(Product product)
         {
-            var addedproduct = ProductServices.Insert(product);
+            _context.Products.Add(product);
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetProduct", new { id = product.Id }, product);
         }
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
-        public IActionResult DeleteProduct(int id)
+        public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = ProductServices.Delete(id);
-            if (product==null)
+            var product = await _context.Products.FindAsync(id);
+            if (product == null)
             {
                 return NotFound();
             }
-            else return NoContent();
 
-            
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
 
-            
+            return NoContent();
+        }
+
+        private bool ProductExists(int id)
+        {
+            return _context.Products.Any(e => e.Id == id);
         }
     }
 }

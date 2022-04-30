@@ -4,8 +4,11 @@ namespace AngularProject.Services
 {
     public interface IOrdersService
     {
-        Task StoreOrder(List<ShoppingCartProduct> shoppingCartProducts,int userId, string userEmailAddress);
-        Task<List<Order>> GetOrdersByUserIdAsync(int userId);
+        public Task<List<Order>> GetAllOrders();
+        public Task<List<Order>> GetOrdersByUserIdAsync(int userId);
+        public Task StoreOrder(List<ShoppingCartProduct> shoppingCartProducts, int userId);
+
+
 
     }
 }

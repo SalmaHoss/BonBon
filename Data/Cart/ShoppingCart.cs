@@ -78,5 +78,11 @@ namespace AngularProject.Data.Cart
             }
             _Context.SaveChanges();
         }
+        public async Task ClearShoppingCartAsync()
+        {
+            var items = await _Context.ShoppingCartProducts.Where(n => n.ShoppingCartId == ShoppingCartId).ToListAsync();
+            _Context.ShoppingCartProducts.RemoveRange(items);
+            await _Context.SaveChangesAsync();
+        }
     }
 }

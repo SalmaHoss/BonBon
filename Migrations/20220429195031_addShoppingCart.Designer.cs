@@ -10,9 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 #nullable disable
 
 namespace AngularProject.Migrations
-{
-
-=======
+{ 
     [DbContext(typeof(ApplicationDbContext))]
 
     [Migration("20220429195031_addShoppingCart")]
@@ -490,3 +488,4 @@ namespace AngularProject.Migrations
         }
     }
 }
+

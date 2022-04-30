@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AngularProject.Services
 {
-    public class ProductService:IProductService
+    public class ProductService : IProductService
     {
         public ApplicationDbContext Context { get; set; }
         public ProductService(ApplicationDbContext context)
@@ -12,64 +12,31 @@ namespace AngularProject.Services
             Context = context;
         }
 
-       
-        public async Task<IEnumerable<Product>> GetAll()
+        public List<Product> GetAll()
         {
-            return await Context.Products.Include("Category").ToListAsync();
+            return Context.Products.Include(i => i.Category).ToList();
         }
 
         public async Task<Product> GetDetails(int id)
         {
-            var product = await Context.Products.FindAsync(id);
-            return product;
+            return await Context.Products.Include(e => e.Category).FirstOrDefaultAsync(i => i.Id == id);
         }
 
-        
-        public async Task<Product> Update(int id, Product product)
-        {
-            
-            Context.Entry(product).State = EntityState.Modified;
-
-            try
-            {
-                await Context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return null;
-            }
-           var updatedproduct = await Context.Products.FindAsync(id);
-            return product;
-
-        }
-
-        public async Task<Product> Insert(Product product)
+        public void Insert(Product product)
         {
             Context.Products.Add(product);
-            await Context.SaveChangesAsync();
-
-            var addedproduct = await Context.Products.FindAsync(product.Id);
-            return product;
+            Context.SaveChanges();
         }
 
-
-
-        public async Task<Product> Delete(int id)
+        public void Update(int id, Product product)
         {
-            var product = await Context.Products.FindAsync(id);
-
-            if (product != null)
-            {
-                Context.Products.Remove(product);
-                await Context.SaveChangesAsync();
-            }
-            return product;
+            Context.Update(product);
+            Context.SaveChanges();
         }
-        public bool Exists(int id)
+        public void Delete(int id)
         {
-            return Context.Products.Any(e => e.Id == id);
+            Context.Remove(Context.Products.Find(id));
+            Context.SaveChanges();
         }
-
-
     }
-}
+    }
