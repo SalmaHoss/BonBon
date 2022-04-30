@@ -5,18 +5,22 @@ using System.Security.Claims;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Configuration;
-
+using Microsoft.AspNetCore.WebUtilities;
+using AngularProject.Models;
 
 namespace AngularProject.Services
 {
     public class UserService : IUserService
     {
-       private UserManager<IdentityUser> userManager;
-       private IConfiguration configuration;
-        public UserService(UserManager<IdentityUser> _userManager, IConfiguration _configuration)
+        private UserManager<IdentityUser> userManager;
+        private IConfiguration configuration;
+        private IMailService mailService;
+
+        public UserService(UserManager<IdentityUser> _userManager, IConfiguration _configuration, IMailService _mailService)
         {
             userManager = _userManager;
             configuration = _configuration;
+            mailService = _mailService;
         }
         public async  Task<UserManagerResponse> RegisterUserAsync(RegisterViewModel model)
         {
@@ -25,14 +29,14 @@ namespace AngularProject.Services
                 throw new NullReferenceException("Register Model is null");
 
             }
-            if(model.Password != model.ConfirmPassword)
-            {
-                return new UserManagerResponse
-                {
-                    Message = "Confirm password doesn't match the password",
-                    IsSuccess = false
-                };
-            }
+            //if(model.Password != model.ConfirmPassword)
+            //{
+            //    return new UserManagerResponse
+            //    {
+            //        Message = "Confirm password doesn't match the password",
+            //        IsSuccess = false
+            //    };
+            //}
             var Identityuser = new IdentityUser
             {
                 Email = model.Email,
@@ -43,6 +47,16 @@ namespace AngularProject.Services
 
             if (result.Succeeded)
             {
+                //var confirmEmailToken = await userManager.GenerateEmailConfirmationTokenAsync(Identityuser);
+
+                //var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
+                //var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
+
+                //string url = $"{configuration["AppUrl"]}/api/auth/confirmemail?userid={Identityuser.Id}&token={validEmailToken}";
+
+                //await mailService.SendEmailAsync(Identityuser.Email, "Confirm your email", $"<h1>Welcome to BonBon Auth</h1>" +
+                //    $"<p>Please confirm your email by <a href='{url}'>Clicking here</a></p>");
+
                 return new UserManagerResponse
                 {
                     Message = "User created successfully!",
@@ -66,7 +80,7 @@ namespace AngularProject.Services
             {
                 return new UserManagerResponse
                 {
-                    Message = "There is no user with that Email address",
+                    Message = "There is no user with this Email address",
                     IsSuccess = false,
                 };
             }
@@ -102,5 +116,98 @@ namespace AngularProject.Services
                 ExpireDate = token.ValidTo
             };
         }
+
+        //public async Task<UserManagerResponse> ConfirmEmailAsync(string userId, string token)
+        //{
+        //    var user = await userManager.FindByIdAsync(userId);
+        //    if (user == null)
+        //        return new UserManagerResponse
+        //        {
+        //            IsSuccess = false,
+        //            Message = "User not found"
+        //        };
+
+        //    var decodedToken = WebEncoders.Base64UrlDecode(token);
+        //    string normalToken = Encoding.UTF8.GetString(decodedToken);
+
+        //    var result = await userManager.ConfirmEmailAsync(user, normalToken);
+
+        //    if (result.Succeeded)
+        //        return new UserManagerResponse
+        //        {
+        //            Message = "Email confirmed successfully!",
+        //            IsSuccess = true,
+        //        };
+
+        //    return new UserManagerResponse
+        //    {
+        //        IsSuccess = false,
+        //        Message = "Email did not confirm",
+        //        Errors = result.Errors.Select(e => e.Description)
+        //    };
+        //}
+
+        //public async Task<UserManagerResponse> ForgetPasswordAsync(string email)
+        //{
+        //    var user = await userManager.FindByEmailAsync(email);
+        //    if (user == null)
+        //        return new UserManagerResponse
+        //        {
+        //            IsSuccess = false,
+        //            Message = "No user associated with this email",
+        //        };
+
+        //    var token = await userManager.GeneratePasswordResetTokenAsync(user);
+        //    var encodedToken = Encoding.UTF8.GetBytes(token);
+        //    var validToken = WebEncoders.Base64UrlEncode(encodedToken);
+
+        //    string url = $"{configuration["AppUrl"]}/ResetPassword?email={email}&token={validToken}";
+
+        //    await mailService.SendEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
+        //        $"<p>To reset your password <a href='{url}'>Click here</a></p>");
+
+        //    return new UserManagerResponse
+        //    {
+        //        IsSuccess = true,
+        //        Message = "Reset password URL has been sent to the email successfully!"
+        //    };
+        //}
+
+        //public async Task<UserManagerResponse> ResetPasswordAsync(ResetPasswordViewModel model)
+        //{
+        //    var user = await userManager.FindByEmailAsync(model.Email);
+        //    if (user == null)
+        //        return new UserManagerResponse
+        //        {
+        //            IsSuccess = false,
+        //            Message = "No user associated with email",
+        //        };
+
+        //    if (model.NewPassword != model.ConfirmPassword)
+        //        return new UserManagerResponse
+        //        {
+        //            IsSuccess = false,
+        //            Message = "Password doesn't match its confirmation",
+        //        };
+
+        //    var decodedToken = WebEncoders.Base64UrlDecode(model.Token);
+        //    string normalToken = Encoding.UTF8.GetString(decodedToken);
+
+        //    var result = await userManager.ResetPasswordAsync(user, normalToken, model.NewPassword);
+
+        //    if (result.Succeeded)
+        //        return new UserManagerResponse
+        //        {
+        //            Message = "Password has been reset successfully!",
+        //            IsSuccess = true,
+        //        };
+
+        //    return new UserManagerResponse
+        //    {
+        //        Message = "Something went wrong",
+        //        IsSuccess = false,
+        //        Errors = result.Errors.Select(e => e.Description),
+        //    };
+        //}
     }
 }
