@@ -101,5 +101,21 @@ namespace AngularProject.Controllers
 
         //    return BadRequest("Some properties are not valid");
         //}
+
+        [HttpPost("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await userService.LogoutUserAsync();
+
+                if (result.IsSuccess)
+                    return Ok(result); // Status Code: 200 
+
+                return BadRequest(result);
+            }
+
+            return BadRequest("Some properties are not valid"); // Status code: 400
+        }
     }
 }

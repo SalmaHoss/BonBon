@@ -13,15 +13,18 @@ namespace AngularProject.Services
     public class UserService : IUserService
     {
         private UserManager<IdentityUser> userManager;
+        private SignInManager<IdentityUser> signInManager;
         private IConfiguration configuration;
         private IMailService mailService;
 
-        public UserService(UserManager<IdentityUser> _userManager, IConfiguration _configuration, IMailService _mailService)
+        public UserService(UserManager<IdentityUser> _userManager, SignInManager<IdentityUser> _signInManager, IConfiguration _configuration, IMailService _mailService)
         {
             userManager = _userManager;
+            signInManager = _signInManager;
             configuration = _configuration;
             mailService = _mailService;
         }
+
         public async  Task<UserManagerResponse> RegisterUserAsync(RegisterViewModel model)
         {
             if(model == null)
@@ -209,5 +212,15 @@ namespace AngularProject.Services
         //        Errors = result.Errors.Select(e => e.Description),
         //    };
         //}
+
+        public async Task<UserManagerResponse> LogoutUserAsync()
+        {
+            await signInManager.SignOutAsync();
+            return new UserManagerResponse
+            {
+                Message = "User logged out successfully!",
+                IsSuccess = true
+            };
+        }
     }
 }
