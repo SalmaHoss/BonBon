@@ -27,6 +27,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
+builder.Services.AddScoped<IMailService, SendGridMailService>();
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = true;
@@ -52,6 +53,7 @@ builder.Services.AddAuthentication(auth => {
 
 });
 
+builder.Services.AddRazorPages();
 
 //3
 var MyAllowSpecificOrigins = "_MyAllowSpecificOrigins";
@@ -99,6 +101,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.MapRazorPages();
+
 app.UseAuthentication();;
 
 app.UseSession();
