@@ -84,7 +84,7 @@ namespace AngularProject.Controllers
         }
 
         [HttpPost("completerOrder/{id}")]
-        public async Task<IActionResult> CompleteOrder(int id)
+        public async Task<IActionResult> CompleteOrder(string id)
         {
             var products = _shoppingCart.GetShoppingCartProducts();
             //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

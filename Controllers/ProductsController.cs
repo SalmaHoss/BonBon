@@ -13,7 +13,7 @@ namespace AngularProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -34,7 +34,8 @@ namespace AngularProject.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            //var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products.Include(e => e.Category).FirstOrDefaultAsync(i => i.Id == id);
 
             if (product == null)
             {

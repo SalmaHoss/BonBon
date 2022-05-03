@@ -15,16 +15,17 @@ namespace AngularProject.Services
         public async Task<List<Order>> GetAllOrders()
         {
             var orders = await _context.Orders.Include(n => n.OrderProducts).ThenInclude(n => n.Product).Include(n => n.User).ToListAsync();
+
             return orders;
 
         }
-        public async Task<List<Order>> GetOrdersByUserIdAsync(int userId)
+        public async Task<List<Order>> GetOrdersByUserIdAsync(string userId)
         {
             var orders = _context.Orders.Include(n => n.OrderProducts).ThenInclude(n => n.Product).Where(n => n.UserId == userId).ToListAsync();
             return await orders;
         }
 
-        public async Task StoreOrder(List<ShoppingCartProduct> shoppingCartProducts, int userId)
+        public async Task StoreOrder(List<ShoppingCartProduct> shoppingCartProducts, string userId)
         {
             var order = new Order()
             {
