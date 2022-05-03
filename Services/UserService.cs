@@ -184,44 +184,44 @@ namespace AngularProject.Services
             };
         }
 
-        public async Task<UserManagerResponse> ResetPasswordASync(ResetPasswordViewModel model)
-        {
-            var user = await userManager.FindByEmailAsync(model.Email);
-            if (user == null)
-            {
-                return new UserManagerResponse
-                {
-                    IsSuccess = false,
-                    Message = "No user associated with this email"
-                };
-            }
+        //public async Task<UserManagerResponse> ResetPasswordASync(ResetPasswordViewModel model)
+        //{
+        //    var user = await userManager.FindByEmailAsync(model.Email);
+        //    if (user == null)
+        //    {
+        //        return new UserManagerResponse
+        //        {
+        //            IsSuccess = false,
+        //            Message = "No user associated with this email"
+        //        };
+        //    }
 
-            if (model.NewPassword != model.ConfirmPassword)
-                return new UserManagerResponse
-                {
-                    IsSuccess = false,
-                    Message = "Password doesn't match its confirmation",
-                };
+        //    if (model.NewPassword != model.ConfirmPassword)
+        //        return new UserManagerResponse
+        //        {
+        //            IsSuccess = false,
+        //            Message = "Password doesn't match its confirmation",
+        //        };
 
-            var decodedToken = WebEncoders.Base64UrlDecode(model.Token);
-            string normalToken = Encoding.UTF8.GetString(decodedToken);
+        //    var decodedToken = WebEncoders.Base64UrlDecode(model.Token);
+        //    string normalToken = Encoding.UTF8.GetString(decodedToken);
 
-            var result = await userManager.ResetPasswordAsync(user, normalToken, model.NewPassword);
+        //    var result = await userManager.ResetPasswordAsync(user, normalToken, model.NewPassword);
 
-            if (result.Succeeded)
-                return new UserManagerResponse
-                {
-                    Message = "Password has been reset successfully!",
-                    IsSuccess = true,
-                };
+        //    if (result.Succeeded)
+        //        return new UserManagerResponse
+        //        {
+        //            Message = "Password has been reset successfully!",
+        //            IsSuccess = true,
+        //        };
 
-            return new UserManagerResponse
-            {
-                Message = "Something went wrong",
-                IsSuccess = false,
-                Errors = result.Errors.Select(e => e.Description),
-            };
-        }
+        //    return new UserManagerResponse
+        //    {
+        //        Message = "Something went wrong",
+        //        IsSuccess = false,
+        //        Errors = result.Errors.Select(e => e.Description),
+        //    };
+        //}
 
         public async Task<UserManagerResponse> LogoutUserAsync()
         {

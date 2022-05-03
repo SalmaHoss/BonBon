@@ -12,9 +12,9 @@ namespace AngularProject.Services
             Context = context;
         }
 
-        public List<Product> GetAll()
+        public async Task<List<Product>> GetAll()
         {
-            return Context.Products.Include(i => i.Category).ToList();
+            return await Context.Products.Include(i => i.Category).ToListAsync();
         }
 
         public async Task<Product> GetDetails(int id)
@@ -22,21 +22,26 @@ namespace AngularProject.Services
             return await Context.Products.Include(e => e.Category).FirstOrDefaultAsync(i => i.Id == id);
         }
 
-        public void Insert(Product product)
+        public async Task Insert(Product product)
         {
             Context.Products.Add(product);
-            Context.SaveChanges();
+            await Context.SaveChangesAsync();
+
         }
 
-        public void Update(int id, Product product)
+        public async Task<Product> Update(int id, Product product)
         {
             Context.Update(product);
-            Context.SaveChanges();
+            await Context.SaveChangesAsync();
+
+            return await Context.Products.Include(e => e.Category).FirstOrDefaultAsync(i => i.Id == id);
+
         }
-        public void Delete(int id)
+        public async Task Delete(int id)
         {
-            Context.Remove(Context.Products.Find(id));
-            Context.SaveChanges();
+            var product = await Context.Products.FindAsync(id);
+            Context.Remove(product);
+            await Context.SaveChangesAsync();
         }
     }
     }

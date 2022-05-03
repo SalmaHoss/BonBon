@@ -95,21 +95,21 @@ namespace AngularProject.Controllers
             return BadRequest(result);  //400
         }
 
-        [HttpPost("ResetPassword")]
-        public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordViewModel model)
-        {
-            if (ModelState.IsValid)
-            {
-                var result = await userService.ResetPasswordASync(model);
+        //[HttpPost("ResetPassword")]
+        //public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordViewModel model)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var result = await userService.ResetPasswordASync(model);
 
-                if (result.IsSuccess)
-                    return Ok(result);
+        //        if (result.IsSuccess)
+        //            return Ok(result);
 
-                return BadRequest(result);
-            }
+        //        return BadRequest(result);
+        //    }
 
-            return BadRequest("Some properties are not valid");
-        }
+        //    return BadRequest("Some properties are not valid");
+        //}
 
         [HttpPost("Logout")]
         public async Task<IActionResult> Logout()

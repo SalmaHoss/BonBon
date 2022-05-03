@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AngularProject.Models;
 using Microsoft.AspNetCore.Authorization;
+using AngularProject.Services;
 
 namespace AngularProject.Controllers
 {
@@ -16,25 +17,27 @@ namespace AngularProject.Controllers
     [Authorize]
     public class ProductsController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        // private readonly ApplicationDbContext _context;
+        private readonly IProductService _productService;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(IProductService productService)
         {
-            _context = context;
+            _productService = productService;
         }
 
         // GET: api/Products
-        [HttpGet]
+        [HttpGet("GetAllProducts")]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
-            return await _context.Products.Include("Category").ToListAsync();
+            var products =  await _productService.GetAll();
+            return Ok(products);
         }
 
         // GET: api/Products/5
-        [HttpGet("{id}")]
+        [HttpGet("GetProductById/{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _productService.GetDetails(id);
 
             if (product == null)
             {
@@ -46,42 +49,36 @@ namespace AngularProject.Controllers
 
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut("UpdateProductByiD/{id}")]
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
+           
             if (id != product.Id)
             {
                 return BadRequest();
             }
-
-            _context.Entry(product).State = EntityState.Modified;
-
-            try
+            var getProduct = await _productService.GetDetails(id);
+            
+            if (getProduct == null)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ProductExists(id))
-                {
                     return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
             }
+            else
+            {
+                var updatedProduct = _productService.Update(id, product);
+                return Ok(updatedProduct);
+            }
+            
 
-            return NoContent();
+            
         }
 
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost("AddProduct/{id}")]
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
+            await _productService.Insert(product);
 
             return CreatedAtAction("GetProduct", new { id = product.Id }, product);
         }
@@ -90,21 +87,17 @@ namespace AngularProject.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = _productService.GetDetails(id);
             if (product == null)
             {
                 return NotFound();
             }
 
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
+            _productService.Delete(id);
 
             return NoContent();
         }
 
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.Id == id);
-        }
+      
     }
 }
