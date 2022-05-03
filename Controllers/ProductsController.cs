@@ -100,6 +100,13 @@ namespace AngularProject.Controllers
             return NoContent();
         }
 
+        // GET: api/ProductsWithPormotion
+        [HttpGet("GetProductsWithPormotion")]
+        public async Task<ActionResult<IEnumerable<Product>>> GetProductsWithPormotion()
+        {
+            return await _context.Products.Include("Category").Where(p => p.IsPromoted == true).ToListAsync();
+        }
+
         private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.Id == id);
