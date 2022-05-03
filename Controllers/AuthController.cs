@@ -1,4 +1,5 @@
-﻿using AngularProject.Services;
+﻿using AngularProject.Models;
+using AngularProject.Services;
 using AngularProject.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +13,8 @@ namespace AngularProject.Controllers
         private IUserService userService;
         private IMailService mailService;
         private IConfiguration configuration;
-        public AuthController(IUserService _userService, IMailService _mailService,IConfiguration _configuration)
+        
+        public AuthController(IUserService _userService, IMailService _mailService, IConfiguration _configuration)
         {
             userService = _userService;
             mailService = _mailService;
@@ -44,7 +46,9 @@ namespace AngularProject.Controllers
 
                 if (result.IsSuccess)
                 {
+                    //Confirmation Mail
                     await mailService.SendEmailAsync(model.Email, "New Login", "<h1>Hey!, new login to your account noticed!</h1><p>New login to your account at " + DateTime.Now + "</p>");
+
                     return Ok(result);
                 }
 
@@ -66,7 +70,7 @@ namespace AngularProject.Controllers
 
             if (result.IsSuccess)
             {
-                return Redirect($"{configuration["AppUrl"]}/confirmemail.html");
+                return Redirect($"{configuration["AppUrl"]}/confirmemail.html"); //in wwwroot
             }
 
             return BadRequest(result);
@@ -85,11 +89,10 @@ namespace AngularProject.Controllers
 
             if (result.IsSuccess)
             {
-                return Ok(result);
+                return Ok(result);  //200
             }
 
-            return BadRequest(result);
-
+            return BadRequest(result);  //400
         }
 
         [HttpPost("ResetPassword")]
@@ -108,5 +111,20 @@ namespace AngularProject.Controllers
             return BadRequest("Some properties are not valid");
         }
 
+        [HttpPost("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await userService.LogoutUserAsync();
+
+                if (result.IsSuccess)
+                    return Ok(result); // Status Code: 200 
+
+                return BadRequest(result);
+            }
+            
+            return BadRequest("Some properties are not valid"); // Status code: 400
+        }
     }
 }

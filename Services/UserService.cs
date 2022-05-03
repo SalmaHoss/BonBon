@@ -1,4 +1,4 @@
-﻿using AngularProject.ViewModels;
+using AngularProject.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
@@ -6,54 +6,26 @@ using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.WebUtilities;
+using AngularProject.Models;
+
 
 namespace AngularProject.Services
 {
     public class UserService : IUserService
     {
-       private UserManager<IdentityUser> userManager;
-       private IConfiguration configuration;
+        private UserManager<IdentityUser> userManager;
+        private SignInManager<IdentityUser> signInManager;
+        private IConfiguration configuration;
         private IMailService mailService;
-        public UserService(UserManager<IdentityUser> _userManager, IConfiguration _configuration,IMailService _mailService)
+
+        public UserService(UserManager<IdentityUser> _userManager, SignInManager<IdentityUser> _signInManager, IConfiguration _configuration, IMailService _mailService)
         {
             userManager = _userManager;
+            signInManager = _signInManager;
             configuration = _configuration;
             mailService = _mailService;
         }
-        public async Task<UserManagerResponse> ConfirmEmailASync(string userId, string token)
-        {
-            var user = await userManager.FindByIdAsync(userId);
-            if(user == null)
-            {
-                return new UserManagerResponse
-                {
-                    IsSuccess = false,
-                    Message = "User not found"
-                };
-            }
-
-            var decodedToken = WebEncoders.Base64UrlDecode(token);
-            string normalToken = Encoding.UTF8.GetString(decodedToken);
-
-            var result = await userManager.ConfirmEmailAsync(user,normalToken); 
-            
-            if(result.Succeeded)
-            {
-                return new UserManagerResponse
-                {
-                    Message = "Email confirmed successfully!",
-                    IsSuccess = true
-                };
-            }
-            return new UserManagerResponse
-            {
-                Message = "Email isn't confirmed",
-                IsSuccess = false,
-                Errors = result.Errors.Select(e => e.Description)
-            };
-        }
- 
-
+        
         public async  Task<UserManagerResponse> RegisterUserAsync(RegisterViewModel model)
         {
             if(model == null)
@@ -61,7 +33,7 @@ namespace AngularProject.Services
                 throw new NullReferenceException("Register Model is null");
 
             }
-            if(model.Password != model.ConfirmPassword)
+            if (model.Password != model.ConfirmPassword)
             {
                 return new UserManagerResponse
                 {
@@ -89,6 +61,7 @@ namespace AngularProject.Services
 
                 await mailService.SendEmailAsync(Identityuser.Email, "Confirm your email",$"<h1>Welcome to BonBon Website</h1>"+
                     $"<p>Please confirm your email by <a href='{url}'>Clicking here</a></p>");
+
                 return new UserManagerResponse
                 {
                     Message = "User created successfully!",
@@ -112,7 +85,7 @@ namespace AngularProject.Services
             {
                 return new UserManagerResponse
                 {
-                    Message = "There is no user with that Email address",
+                    Message = "There is no user with this Email address",
                     IsSuccess = false,
                 };
             }
@@ -149,6 +122,39 @@ namespace AngularProject.Services
             };
         }
 
+        public async Task<UserManagerResponse> ConfirmEmailASync(string userId, string token)
+        {
+            var user = await userManager.FindByIdAsync(userId);
+            if(user == null)
+            {
+                return new UserManagerResponse
+                {
+                    IsSuccess = false,
+                    Message = "User not found"
+                };
+            }
+
+            var decodedToken = WebEncoders.Base64UrlDecode(token);
+            string normalToken = Encoding.UTF8.GetString(decodedToken);
+
+            var result = await userManager.ConfirmEmailAsync(user,normalToken); 
+            
+            if(result.Succeeded)
+            {
+                return new UserManagerResponse
+                {
+                    Message = "Email confirmed successfully!",
+                    IsSuccess = true
+                };
+            }
+            return new UserManagerResponse
+            {
+                Message = "Email isn't confirmed",
+                IsSuccess = false,
+                Errors = result.Errors.Select(e => e.Description)
+            };
+        }
+
         public async Task<UserManagerResponse> ForgetPasswordASync(string email)
         {
             var user = await userManager.FindByEmailAsync(email);
@@ -180,8 +186,6 @@ namespace AngularProject.Services
 
         public async Task<UserManagerResponse> ResetPasswordASync(ResetPasswordViewModel model)
         {
-           
-            
             var user = await userManager.FindByEmailAsync(model.Email);
             if (user == null)
             {
@@ -216,6 +220,16 @@ namespace AngularProject.Services
                 Message = "Something went wrong",
                 IsSuccess = false,
                 Errors = result.Errors.Select(e => e.Description),
+            };
+        }
+
+        public async Task<UserManagerResponse> LogoutUserAsync()
+        {
+            await signInManager.SignOutAsync();
+            return new UserManagerResponse
+            {
+                Message = "User logged out successfully!",
+                IsSuccess = true
             };
         }
     }

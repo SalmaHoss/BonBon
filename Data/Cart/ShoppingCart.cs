@@ -8,7 +8,6 @@ namespace AngularProject.Data.Cart
 {
     public class ShoppingCart
     {
-
          public string ShoppingCartId { get; set; }
          public  List<ShoppingCartProduct> ShoppingCartProducts {get;set;}
          //Is He gonna use services?
@@ -18,7 +17,6 @@ namespace AngularProject.Data.Cart
         {
             _Context = context;
         }
-
 
         //to be used in program
         

@@ -1,4 +1,5 @@
-﻿using AngularProject.ViewModels;
+﻿using AngularProject.Models;
+using AngularProject.ViewModels;
 namespace AngularProject.Services
 {
     public interface IUserService
@@ -7,9 +8,7 @@ namespace AngularProject.Services
         Task<UserManagerResponse> LoginUserAsync(LoginViewModel model);
         Task<UserManagerResponse> ConfirmEmailASync(string userId, string token);
         Task<UserManagerResponse> ForgetPasswordASync(string email);
-
         Task<UserManagerResponse> ResetPasswordASync(ResetPasswordViewModel model);
-
-
+        Task<UserManagerResponse> LogoutUserAsync();
     }
 }
