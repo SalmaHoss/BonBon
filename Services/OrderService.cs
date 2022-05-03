@@ -23,6 +23,7 @@ namespace AngularProject.Services
             var orders = _context.Orders.Include(n => n.OrderProducts).ThenInclude(n => n.Product).Where(n => n.UserId == userId).ToListAsync();
             return await orders;
         }
+
         public async Task StoreOrder(List<ShoppingCartProduct> shoppingCartProducts, int userId)
         {
             var order = new Order()
