@@ -61,6 +61,7 @@ builder.Services.AddAuthentication(auth =>
     });
 
 builder.Services.AddRazorPages();
+builder.Services.AddHttpContextAccessor();
 
 //1
 builder.Services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling =

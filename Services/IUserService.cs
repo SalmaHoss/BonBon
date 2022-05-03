@@ -1,5 +1,4 @@
-﻿using AngularProject.Models;
-using AngularProject.ViewModels;
+﻿using AngularProject.ViewModels;
 namespace AngularProject.Services
 {
     public interface IUserService
