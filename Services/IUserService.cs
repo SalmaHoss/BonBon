@@ -1,4 +1,6 @@
 ﻿using AngularProject.ViewModels;
+using Microsoft.AspNetCore.Identity;
+
 namespace AngularProject.Services
 {
     public interface IUserService
@@ -9,5 +11,7 @@ namespace AngularProject.Services
         Task<UserManagerResponse> ForgetPasswordASync(string email);
         Task<UserManagerResponse> ResetPasswordASync(ResetPasswordViewModel model);
         Task<UserManagerResponse> LogoutUserAsync();
+        //Exist
+        Task<IdentityUser> UserExistAsync(string id);
     }
 }

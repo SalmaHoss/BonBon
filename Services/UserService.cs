@@ -77,7 +77,8 @@ namespace AngularProject.Services
             };
         }
 
-        public async Task<UserManagerResponse> LoginUserAsync(LoginViewModel model)
+     
+            public async Task<UserManagerResponse> LoginUserAsync(LoginViewModel model)
         {
             var user = await userManager.FindByEmailAsync(model.Email);
 
@@ -231,6 +232,12 @@ namespace AngularProject.Services
                 Message = "User logged out successfully!",
                 IsSuccess = true
             };
+        }
+
+        public Task<IdentityUser> UserExistAsync(string id)
+        {
+            var user = userManager.FindByIdAsync(id);
+            return user;
         }
     }
 }
