@@ -6,6 +6,9 @@ namespace AngularProject.ViewModels
     [NotMapped]
     public class RegisterViewModel
     {
+        [Required]
+        [StringLength(50)]
+        public string Username { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -23,6 +26,8 @@ namespace AngularProject.ViewModels
 
         public string? ProfileImage { get; set; }
         public Gender Gender { get; set; }
+
+        public string? Role { get; set; }
 
     }
 }

@@ -10,11 +10,13 @@ using AngularProject.Models;
 using AngularProject.Data.Cart;
 using AngularProject.Services;
 using AngularProject.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AngularProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class OrdersController : ControllerBase
     {
         //Add private readonly IProductService _productService;
@@ -84,7 +86,7 @@ namespace AngularProject.Controllers
         }
 
         [HttpPost("completerOrder/{id}")]
-        public async Task<IActionResult> CompleteOrder(int id)
+        public async Task<IActionResult> CompleteOrder(string id)
         {
             var products = _shoppingCart.GetShoppingCartProducts();
             //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -95,42 +97,50 @@ namespace AngularProject.Controllers
             return NoContent();
         }
 
+        [HttpPost("changeOrderStateById/{id}")]
+        public async Task<IActionResult> ChangeOrderState(int id, OrderState state)
+        {            
+            await _orderService.UpdateOrderState(id, state);
+
+            return NoContent();
+        }
+
         //public IActionResult CompleteOrder()
         //{
         //    var items = shoppingCart.GetShoppingCartItems();
         //    string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         //    string userEmailAddress = User.FindFirstValue(ClaimTypes.Email);
 
-//     orderRepository.StoreOrderAsync(items, userId, userEmailAddress);
-//     shoppingCart.ClearShoppingCartAsync();
+        //     orderRepository.StoreOrderAsync(items, userId, userEmailAddress);
+        //     shoppingCart.ClearShoppingCartAsync();
 
-//    return View("OrderCompleted");
-//}
+        //    return View("OrderCompleted");
+        //}
 
 
 
-//public static ShoppingCart GetShoppingCart(IServiceProvider serviceProvider)
-//{
-//    ISession session = serviceProvider.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
-//    var context = serviceProvider.GetService<ApplicationDbContext>();
-//    string CartId = session.GetString("CartID") ?? Guid.NewGuid().ToString();
-//    session.SetString("CartId", CartId);
-//    return new ShoppingCart(context) { ShoppingCartId = CartId };
+        //public static ShoppingCart GetShoppingCart(IServiceProvider serviceProvider)
+        //{
+        //    ISession session = serviceProvider.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
+        //    var context = serviceProvider.GetService<ApplicationDbContext>();
+        //    string CartId = session.GetString("CartID") ?? Guid.NewGuid().ToString();
+        //    session.SetString("CartId", CartId);
+        //    return new ShoppingCart(context) { ShoppingCartId = CartId };
 
-//}
-//[HttpGet]
+        //}
+        //[HttpGet]
 
-//public  async Task<ActionResult<IEnumerable<Order>>> GetOrders()
-//{
-//    return  await _
-//        //_shoppingCart.GetShoppingCartProducts();
-//}
+        //public  async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+        //{
+        //    return  await _
+        //        //_shoppingCart.GetShoppingCartProducts();
+        //}
 
-      /*  public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
-        {
-            return await _
-                //_shoppingCart.GetShoppingCartProducts();
-        }*/
+        /*  public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
+          {
+              return await _
+                  //_shoppingCart.GetShoppingCartProducts();
+          }*/
 
 
         // GET: api/Products/5

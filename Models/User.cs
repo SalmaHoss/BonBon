@@ -9,15 +9,19 @@ namespace AngularProject;
 public enum Gender { Female, Male }
 
 // Add profile data for application users by adding properties to the AppUser class
-public class User 
+<<<<<<< HEAD
+public class User :IdentityUser
 {
-    [Key]
-    public int Id { get; set; }
-
+=======
+public class User : IdentityUser
+{
+    
     public string UserName { get; set; }
+>>>>>>> 834f87c28afdc2c05114654d7e241947f39e6ead
 
-    public string Email { get; set; }
     public string? ProfileImage { get; set; }
     public Gender Gender {get; set;}
+
+    public string? Role { get; set; }
 }
 

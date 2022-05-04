@@ -14,16 +14,22 @@ namespace AngularProject.Services
 
         public async Task<List<Order>> GetAllOrders()
         {
-            var orders = await _context.Orders.Include(n => n.OrderProducts).ThenInclude(n => n.Product).Include(n => n.User).ToListAsync();
+            // var orders = await _context.Orders.Include(n => n.OrderProducts).ThenInclude(n => n.Product).Include(n => n.User).ToListAsync();
+
+            //User do not want to be returned
+            //var orders = await _context.Orders.Include(n => n.User).ToListAsync();
+             var orders = await _context.Orders.Include(n => n.OrderProducts).ThenInclude(n => n.Product).ToListAsync();
+
             return orders;
 
         }
-        public async Task<List<Order>> GetOrdersByUserIdAsync(int userId)
+        public async Task<List<Order>> GetOrdersByUserIdAsync(string userId)
         {
             var orders = _context.Orders.Include(n => n.OrderProducts).ThenInclude(n => n.Product).Where(n => n.UserId == userId).ToListAsync();
             return await orders;
         }
-        public async Task StoreOrder(List<ShoppingCartProduct> shoppingCartProducts, int userId)
+
+        public async Task StoreOrder(List<ShoppingCartProduct> shoppingCartProducts, string userId)
         {
             var order = new Order()
             {
@@ -44,5 +50,21 @@ namespace AngularProject.Services
             }
             await _context.SaveChangesAsync();
         }
+
+        public async Task UpdateOrderState(int orderid, OrderState state)
+        {
+            var order = await _context.Orders.FindAsync(orderid);
+            if (order != null)
+            {
+                order.State = state;
+                await _context.SaveChangesAsync();
+            }
+            
+            
+        }
+
+
+
+
     }
 }
