@@ -38,5 +38,36 @@ namespace AngularProject.Services
             Context.Remove(Context.Products.Find(id));
             Context.SaveChanges();
         }
+
+        public async Task<List<Product>> GetProductsRecommended(int numberOfrecords)
+        {
+            return await Context.Products
+                .OrderByDescending(e => e.OverAllRating).
+                 Take(numberOfrecords).Include(n=>n.Category).ToListAsync();
+
+        }
+
+        public async Task<List<Product>> SearchProduct(string name)
+        {
+           
+            var products = await Context.Products.
+                Include(C => C.Category).Where(p =>p.Title.
+                Contains(name)).ToListAsync();
+
+            return products;
+            
+
+        }
+
+        public async Task<List<Product>> FilterProducts(int categoryId)
+        {
+
+            var products = await Context.Products.
+                Include(C => C.Category).Where(p=>p.CategoryId == categoryId).ToListAsync();
+
+            return products;
+
+
+        }
     }
     }

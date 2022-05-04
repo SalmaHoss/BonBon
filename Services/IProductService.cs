@@ -10,5 +10,11 @@ namespace AngularProject.Services
         public void Insert(Product product);
         public void Update(int id, Product product);
         public void Delete(int id);
+        public Task<List<Product>> GetProductsRecommended(int numberOfrecords);
+        public Task<List<Product>> SearchProduct(string name);
+        public Task<List<Product>> FilterProducts(int categoryId);
+
+
+
     }
 }
