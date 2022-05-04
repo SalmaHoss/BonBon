@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AngularProject.Models;
 using Microsoft.AspNetCore.Authorization;
+using AngularProject.Services;
 
 namespace AngularProject.Controllers
 {
@@ -17,10 +18,14 @@ namespace AngularProject.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IProductService _productService;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(ApplicationDbContext context,
+            IProductService productService)
         {
             _context = context;
+            _productService = productService;
+            
         }
 
         // GET: api/Products
@@ -107,5 +112,32 @@ namespace AngularProject.Controllers
         {
             return _context.Products.Any(e => e.Id == id);
         }
+
+
+        [HttpGet("getProductRecommende/{productsNum}")]
+        public async Task<IActionResult> getProductRecommended(int productsNum)
+        {
+            var products = await _productService.GetProductsRecommended(productsNum);
+
+            return Ok(products);
+        }
+
+        [HttpGet("searchProduct/{productName}")]
+        public async Task<IActionResult> SearchProdByName(string productName)
+        {
+            var products = await _productService.SearchProduct(productName);
+
+            return Ok(products);
+        }
+
+        [HttpGet("FilterProducts/{CategotyId}")]
+        public async Task<IActionResult> FilterProductsByCategoryID(int CategotyId)
+        {
+            var products = await _productService.FilterProducts(CategotyId);
+
+            return Ok(products);
+        }
+
+
     }
 }

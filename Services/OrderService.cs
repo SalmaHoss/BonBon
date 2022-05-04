@@ -14,7 +14,11 @@ namespace AngularProject.Services
 
         public async Task<List<Order>> GetAllOrders()
         {
-            var orders = await _context.Orders.Include(n => n.OrderProducts).ThenInclude(n => n.Product).Include(n => n.User).ToListAsync();
+            // var orders = await _context.Orders.Include(n => n.OrderProducts).ThenInclude(n => n.Product).Include(n => n.User).ToListAsync();
+
+            //User do not want to be returned
+            //var orders = await _context.Orders.Include(n => n.User).ToListAsync();
+             var orders = await _context.Orders.Include(n => n.OrderProducts).ThenInclude(n => n.Product).ToListAsync();
 
             return orders;
 
@@ -46,5 +50,21 @@ namespace AngularProject.Services
             }
             await _context.SaveChangesAsync();
         }
+
+        public async Task UpdateOrderState(int orderid, OrderState state)
+        {
+            var order = await _context.Orders.FindAsync(orderid);
+            if (order != null)
+            {
+                order.State = state;
+                await _context.SaveChangesAsync();
+            }
+            
+            
+        }
+
+
+
+
     }
 }
