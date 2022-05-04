@@ -8,19 +8,24 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AngularProject.Models;
 using Microsoft.AspNetCore.Authorization;
+using AngularProject.Services;
 
 namespace AngularProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IProductService _productService;
 
-        public ProductsController(ApplicationDbContext context)
+        public ProductsController(ApplicationDbContext context,
+            IProductService productService)
         {
             _context = context;
+            _productService = productService;
+            
         }
 
         // GET: api/Products
@@ -34,7 +39,8 @@ namespace AngularProject.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
-            var product = await _context.Products.FindAsync(id);
+            //var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products.Include(e => e.Category).FirstOrDefaultAsync(i => i.Id == id);
 
             if (product == null)
             {
@@ -110,5 +116,32 @@ namespace AngularProject.Controllers
         {
             return _context.Products.Any(e => e.Id == id);
         }
+
+
+        [HttpGet("getProductRecommende/{productsNum}")]
+        public async Task<IActionResult> getProductRecommended(int productsNum)
+        {
+            var products = await _productService.GetProductsRecommended(productsNum);
+
+            return Ok(products);
+        }
+
+        [HttpGet("searchProduct/{productName}")]
+        public async Task<IActionResult> SearchProdByName(string productName)
+        {
+            var products = await _productService.SearchProduct(productName);
+
+            return Ok(products);
+        }
+
+        [HttpGet("FilterProducts/{CategotyId}")]
+        public async Task<IActionResult> FilterProductsByCategoryID(int CategotyId)
+        {
+            var products = await _productService.FilterProducts(CategotyId);
+
+            return Ok(products);
+        }
+
+
     }
 }
