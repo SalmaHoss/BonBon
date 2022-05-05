@@ -12,8 +12,6 @@ namespace AngularProject.Services
             configuration = _configuration;
         }
 
-
-
         public async Task SendEmailAsync(string toEmail, string subject, string content)
         {
             var apiKey = configuration["SendGridAPIKey"];

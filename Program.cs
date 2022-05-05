@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using AngularProject.Models;
 using AngularProject.Data.Cart;
+using AngularProject;
 
 var builder = WebApplication.CreateBuilder(args);
 //3
@@ -32,7 +33,7 @@ builder.Services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
 builder.Services.AddScoped<IMailService, SendGridMailService>();
 //builder.Services.AddTransient<IMailService, SendGridMailService>(); //Confirmation Mail
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+builder.Services.AddIdentity<User, IdentityRole>(options =>
     {
         options.Password.RequireDigit = true;
         options.Password.RequireLowercase = true;
@@ -51,15 +52,15 @@ builder.Services.AddAuthentication(auth =>
     {
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
         {
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AuthSettings:Key"])),
             ValidateIssuer = false,
             ValidateAudience = false,
             RequireExpirationTime = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AuthSettings:Key"])),
             ValidateIssuerSigningKey = true
         };
 
-    });
-builder.Services.AddHttpClient();
+});
+
 builder.Services.AddRazorPages();
 builder.Services.AddHttpContextAccessor();
 
@@ -103,7 +104,12 @@ builder.Services.AddAuthentication()
    {
        googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
        googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-   });
+   })
+   .AddFacebook(facebookOptions =>
+    {
+        facebookOptions.AppId = "1123745748470433";
+        facebookOptions.AppSecret = "404ba181b770660be894b1c84b01f5d8";
+    });
 
 var app = builder.Build();
 
@@ -125,13 +131,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapRazorPages();   //so we can access ResetPassword page
-//app.UseEndpoints(endpoints =>
-//{
-//    endpoints.MapRazorPages();
-//    endpoints.MapControllers();
-//});
-
 
 //4
 app.UseCors(MyAllowSpecificOrigins);

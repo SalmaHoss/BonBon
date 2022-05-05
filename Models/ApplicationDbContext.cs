@@ -10,10 +10,8 @@ namespace AngularProject.Models
         {
 
         }
+
         public DbSet<Product> Products { get; set; }
-
-
-        //Orders related tables
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderProduct> OrderProducts { get; set; }
         public DbSet<Category> Categories { get; set; }

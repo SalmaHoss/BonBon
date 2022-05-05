@@ -25,6 +25,7 @@ namespace AngularProject.ViewModels
         public string ConfirmPassword { get; set; }
 
         public string? ProfileImage { get; set; }
+
         public Gender Gender { get; set; }
 
         public string? Role { get; set; }

@@ -12,10 +12,6 @@ namespace AngularProject.Models
 
         public DateTime OrderDate { get; set; }
         public string UserId { get; set; }
-<<<<<<< HEAD
-
-=======
->>>>>>> 834f87c28afdc2c05114654d7e241947f39e6ead
 
         
         public OrderState State { get; set; }

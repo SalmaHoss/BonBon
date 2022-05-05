@@ -14,10 +14,7 @@ namespace AngularProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-<<<<<<< HEAD
-=======
     //[Authorize]
->>>>>>> 834f87c28afdc2c05114654d7e241947f39e6ead
     public class ProductsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

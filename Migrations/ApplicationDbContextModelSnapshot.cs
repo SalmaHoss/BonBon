@@ -50,14 +50,8 @@ namespace AngularProject.Migrations
                     b.Property<DateTime>("OrderDate")
                         .HasColumnType("datetime2");
 
-<<<<<<< HEAD
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-=======
                     b.Property<int>("State")
                         .HasColumnType("int");
->>>>>>> 834f87c28afdc2c05114654d7e241947f39e6ead
 
                     b.Property<string>("UserId")
                         .IsRequired()
@@ -383,13 +377,9 @@ namespace AngularProject.Migrations
                     b.Property<string>("ProfileImage")
                         .HasColumnType("nvarchar(max)");
 
-<<<<<<< HEAD
                     b.Property<string>("Role")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-=======
->>>>>>> 834f87c28afdc2c05114654d7e241947f39e6ead
                     b.HasDiscriminator().HasValue("User");
                 });
 
