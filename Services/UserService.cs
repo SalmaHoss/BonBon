@@ -252,7 +252,7 @@ namespace AngularProject.Services
             };
         }
 
-        public Task<IdentityUser> UserExistAsync(string id)
+        public Task<User> UserExistAsync(string id)
         {
             var user = userManager.FindByIdAsync(id);
             return user;
