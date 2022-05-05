@@ -13,6 +13,7 @@ namespace AngularProject.Services
         public Task<List<Product>> GetProductsRecommended(int numberOfrecords);
         public Task<List<Product>> SearchProduct(string name);
         public Task<List<Product>> FilterProducts(int categoryId);
+        public Task<ActionResult<IEnumerable<Product>>> GetProductsWithPormotion();
 
 
 

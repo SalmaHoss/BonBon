@@ -119,8 +119,11 @@ namespace AngularProject.Controllers
         [HttpGet("GetProductsWithPormotion")]
         public async Task<ActionResult<IEnumerable<Product>>> GetProductsWithPormotion()
         {
-            return await _context.Products.Include("Category").Where(p => p.IsPromoted == true).ToListAsync();
+            var products = await _productService.GetProductsWithPormotion();
+
+            return Ok(products);
         }
+
         private bool ProductExists(int id)
         {
             return _context.Products.Any(e => e.Id == id);

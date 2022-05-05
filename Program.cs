@@ -75,10 +75,9 @@ builder.Services.AddSwaggerGen();
 /*
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
-builder.Services.AddSession();
-*/
+//builder.Services.AddSession();
 //2
-
+*/
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(MyAllowSpecificOrigins,

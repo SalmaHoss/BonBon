@@ -23,14 +23,18 @@ namespace AngularProject.Controllers
         private readonly ShoppingCart _shoppingCart;
         private readonly IProductService _productService;
         private readonly IOrderService _orderService;
+        private readonly IUserService _userService;
 
         public OrdersController(ShoppingCart shoppingCart,
             IProductService productService,
-            IOrderService orderService)
+            IOrderService orderService
+            , IUserService userService)
         {
             _shoppingCart = shoppingCart;
             _productService = productService;
             _orderService = orderService;
+            _userService = userService;
+
         }
 
         [HttpGet]
@@ -88,6 +92,11 @@ namespace AngularProject.Controllers
         [HttpPost("completerOrder/{id}")]
         public async Task<IActionResult> CompleteOrder(string id)
         {
+            var user = await _userService.UserExistAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
             var products = _shoppingCart.GetShoppingCartProducts();
             //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -104,6 +113,15 @@ namespace AngularProject.Controllers
 
             return NoContent();
         }
+        [HttpGet("GetOrdersByUserId/{id}")]
+     
+        public async Task<IActionResult> GetOrdersByUserId(string id) { 
+        
+        var orders = await _orderService.GetOrdersByUserIdAsync(id);
+            return Ok(orders);
+
+        }
+
 
         //public IActionResult CompleteOrder()
         //{

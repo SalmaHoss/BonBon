@@ -46,7 +46,10 @@ namespace AngularProject.Services
                  Take(numberOfrecords).Include(n=>n.Category).ToListAsync();
 
         }
-
+        public async Task<ActionResult<IEnumerable<Product>>> GetProductsWithPormotion()
+        {
+            return await Context.Products.Include("Category").Where(p => p.IsPromoted == true).ToListAsync();
+        }
         public async Task<List<Product>> SearchProduct(string name)
         {
            
