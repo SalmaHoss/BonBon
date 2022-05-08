@@ -13,7 +13,7 @@ namespace AngularProject.Services
         Task<UserManagerResponse> ResetPasswordASync(ResetPasswordViewModel model);
         Task<UserManagerResponse> LogoutUserAsync();
         //Exist
-        Task<IdentityUser> UserExistAsync(string id);
+        Task<User> UserExistAsync(string id);
 
 
         /* ---------------------- Authorization -------------------- */

@@ -66,6 +66,53 @@ namespace AngularProject.Controllers
             };
         }
 
+        [HttpPost("GetUserByEmailforLogin")]
+        public async Task<Object> GetUserByEmailforlogin(LoginViewModel model)
+        {
+            var user = await userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+                return null;
+
+            var result = await userManager.CheckPasswordAsync(user, model.Password);
+
+            if(!result)
+                return null;
+
+
+            return new
+            {
+                user.UserName,
+                user.Email,
+                user.ProfileImage,
+                user.Gender,
+                user.Role
+            };
+        }
+        [HttpPost("GetUserByEmailforRegister")]
+        public async Task<Object> GetUserByEmailforRegister(RegisterViewModel model)
+        {
+            var user = await userManager.FindByEmailAsync(model.Email);
+
+            if (user == null)
+                return null;
+
+            var result = await userManager.CheckPasswordAsync(user, model.Password);
+
+            if (!result)
+                return null;
+
+
+            return new
+            {
+                user.UserName,
+                user.Email,
+                user.ProfileImage,
+                user.Gender,
+                user.Role
+            };
+        }
+
         //[Authorize(Roles ="Admin, Customer")]
         [HttpPut("EditUser/{id}")]
         public async Task<Object> EditUserProfile(string id, RegisterViewModel _user)
