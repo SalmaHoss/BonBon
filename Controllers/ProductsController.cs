@@ -14,7 +14,7 @@ namespace AngularProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -30,6 +30,7 @@ namespace AngularProject.Controllers
 
         // GET: api/Products
         [HttpGet]
+        //[Authorize]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
             return await _context.Products.Include("Category").ToListAsync();
@@ -37,6 +38,8 @@ namespace AngularProject.Controllers
 
         // GET: api/Products/5
         [HttpGet("{id}")]
+        //[Authorize]
+
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
             //var product = await _context.Products.FindAsync(id);
@@ -53,6 +56,8 @@ namespace AngularProject.Controllers
         // PUT: api/Products/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
+        //[Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> PutProduct(int id, Product product)
         {
             if (id != product.Id)
@@ -84,6 +89,8 @@ namespace AngularProject.Controllers
         // POST: api/Products
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
+        //[Authorize(Roles = "Admin")]
+
         public async Task<ActionResult<Product>> PostProduct(Product product)
         {
             _context.Products.Add(product);
@@ -94,6 +101,8 @@ namespace AngularProject.Controllers
 
         // DELETE: api/Products/5
         [HttpDelete("{id}")]
+        //[Authorize(Roles = "Admin")]
+
         public async Task<IActionResult> DeleteProduct(int id)
         {
             var product = await _context.Products.FindAsync(id);
@@ -144,6 +153,31 @@ namespace AngularProject.Controllers
 
             return Ok(products);
         }
+
+        [HttpGet("SortProductsByAlpha/{ascending}")]
+        public async Task<IActionResult> SortByAlpha(bool ascending)
+        {
+            var products = await _productService.SortByAlpha(ascending);
+
+            return Ok(products);
+        }
+
+        [HttpGet("SortProductsByPrice/{Cheapest}")]
+        public async Task<IActionResult> SortByPrice(bool Cheapest)
+        {
+            var products = await _productService.SortByPrice(Cheapest);
+
+            return Ok(products);
+        }
+
+        [HttpGet("SortBestSeller")]
+        public async Task<IActionResult> SortByBestSeller()
+        {
+            var products = await _productService.SortByBestSellers();
+
+            return Ok(products);
+        }
+        
 
 
     }

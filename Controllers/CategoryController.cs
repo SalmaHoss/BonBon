@@ -1,5 +1,6 @@
 ﻿using AngularProject.Models;
 using AngularProject.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -21,6 +22,8 @@ namespace AngularProject.Controllers
 
         // GET: api/<CategoryController>
         [HttpGet]
+       // [Authorize]
+
         public IEnumerable<Category> Get()
         {
             return CategoryRepository.GetAll();
@@ -35,6 +38,8 @@ namespace AngularProject.Controllers
 
         // POST api/<CategoryController>
         [HttpPost]
+        //[Authorize(Roles = "Admin")]
+
         public void Post([FromBody] Category cat)
         {
             CategoryRepository.Insert(cat);
@@ -42,6 +47,8 @@ namespace AngularProject.Controllers
 
         // PUT api/<CategoryController>/5
         [HttpPut("{id}")]
+       // [Authorize(Roles = "Admin")]
+
         public void Put(int id, [FromBody] Category cat)
         {
             CategoryRepository.Update(id,cat);
@@ -49,6 +56,8 @@ namespace AngularProject.Controllers
 
         // DELETE api/<CategoryController>/5
         [HttpDelete("{id}")]
+        //[Authorize(Roles = "Admin")]
+
         public void Delete(int id)
         {
             CategoryRepository.Delete(id);
