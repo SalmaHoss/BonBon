@@ -72,5 +72,50 @@ namespace AngularProject.Services
 
 
         }
+
+        public async Task<List<Product>> SortByAlpha(bool ascd)
+        {
+            //if ascd --> ture --> a --> Z
+
+            if (ascd)
+            {
+                var products = await Context.Products.
+                    Include(C => C.Category).OrderBy(p => p.Title).ToListAsync();
+                return products;
+            }
+            else
+            {
+                var products = await Context.Products.
+                    Include(C => C.Category).OrderByDescending(p => p.Title).ToListAsync();
+                return products;
+            }
+        }
+
+        public async Task<List<Product>> SortByPrice(bool Cheapest)
+        {
+            //if ascd --> ture --> a --> Z
+
+            if (Cheapest)
+            {
+                var products = await Context.Products.
+                    Include(C => C.Category).OrderBy(p => p.Price).ToListAsync();
+                return products;
+            }
+            else
+            {
+                var products = await Context.Products.
+                    Include(C => C.Category).OrderByDescending(p => p.Price).ToListAsync();
+                return products;
+            }
+        }
+        public async Task<List<Product>> SortByBestSellers()
+        {
+         
+           var products = await Context.Products.
+                    Include(C => C.Category).OrderByDescending(p => p.OverAllRating).ToListAsync();
+                return products;
+            
+      
+        }
     }
     }

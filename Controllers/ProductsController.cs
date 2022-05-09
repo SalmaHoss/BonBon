@@ -14,7 +14,7 @@ namespace AngularProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
     public class ProductsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -153,6 +153,31 @@ namespace AngularProject.Controllers
 
             return Ok(products);
         }
+
+        [HttpGet("SortProductsByAlpha/{ascending}")]
+        public async Task<IActionResult> SortByAlpha(bool ascending)
+        {
+            var products = await _productService.SortByAlpha(ascending);
+
+            return Ok(products);
+        }
+
+        [HttpGet("SortProductsByPrice/{Cheapest}")]
+        public async Task<IActionResult> SortByPrice(bool Cheapest)
+        {
+            var products = await _productService.SortByPrice(Cheapest);
+
+            return Ok(products);
+        }
+
+        [HttpGet("SortBestSeller")]
+        public async Task<IActionResult> SortByBestSeller()
+        {
+            var products = await _productService.SortByBestSellers();
+
+            return Ok(products);
+        }
+        
 
 
     }
