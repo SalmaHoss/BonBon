@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AngularProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220504000105_addOrderState")]
-    partial class addOrderState
+    [Migration("20220504133612_deletemail")]
+    partial class deletemail
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

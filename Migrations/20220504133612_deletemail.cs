@@ -4,7 +4,7 @@
 
 namespace AngularProject.Migrations
 {
-    public partial class deleteOrderEmail : Migration
+    public partial class deletemail : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

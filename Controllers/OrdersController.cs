@@ -60,6 +60,14 @@ namespace AngularProject.Controllers
             return Ok(products);
         }
 
+        [HttpGet("GetShoppingCartTotal")]
+        public IActionResult GetShoppingCartTotal()
+        {
+            var products = _shoppingCart.GetShoppingCartProducts();
+            _shoppingCart.ShoppingCartProducts = products;
+            var total = _shoppingCart.GetShoppingCartTotal();
+            return Ok(total);
+        }
         [HttpPost("AddItem/{id}")]
         public async Task<IActionResult> AddToShoppingCart(int id)
         {
@@ -119,7 +127,15 @@ namespace AngularProject.Controllers
             return Ok(orders);
 
         }
+        [HttpGet("GetOrderDetails/{id}")]
 
+        public async Task<IActionResult> GetOrderDetails(int id)
+        {
+
+            var orders = await _orderService.GetOrderDetailsAsync(id);
+            return Ok(orders);
+
+        }
 
         //public IActionResult CompleteOrder()
         //{

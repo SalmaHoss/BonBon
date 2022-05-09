@@ -18,21 +18,20 @@ namespace AngularProject.Data.Cart
             _Context = context;
         }
 
-        //to be used in program
         
         public static ShoppingCart GetShoppingCart(IServiceProvider service)
         {    //If this is not null
-            ISession? session = service.GetRequiredService<IHttpContextAccessor>()?.HttpContext.Session;
+            ISession? session = service.GetRequiredService<IHttpContextAccessor>()?.HttpContext?.Session;
             var ctxt = service.GetService<ApplicationDbContext>();
-            string cartId = session.GetString("CartId") ?? Guid.NewGuid().ToString();
-            session.SetString("CartId", cartId);
+            string cartId = session?.GetString("CartId") ?? Guid.NewGuid().ToString();
+            session?.SetString("CartId", cartId);
             return new ShoppingCart(ctxt) { ShoppingCartId = cartId };
         }
+
         public  List<ShoppingCartProduct> GetShoppingCartProducts()
         {
             return  ShoppingCartProducts ?? _Context.ShoppingCartProducts.Where(n => n.ShoppingCartId == ShoppingCartId).Include(n=>n.Product).ToList();
         }
-
         public decimal GetShoppingCartTotal()
         {
             return _Context.ShoppingCartProducts.Where(n => n.ShoppingCartId == ShoppingCartId).Select(n => n.Product.Price * n.Amount).Sum();

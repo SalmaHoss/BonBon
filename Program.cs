@@ -28,10 +28,20 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepoService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
-builder.Services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
-
 builder.Services.AddScoped<IMailService, SendGridMailService>();
 //builder.Services.AddTransient<IMailService, SendGridMailService>(); //Confirmation Mail
+
+//sc Session
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+builder.Services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
+
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(5);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     {
@@ -72,10 +82,7 @@ builder.Services.AddRazorPages();  //so we can access ResetPassword page
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 /*
-builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
-//builder.Services.AddSession();
-//2
+
 */
 builder.Services.AddCors(options =>
 {
@@ -90,12 +97,6 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddDistributedMemoryCache();
 
-builder.Services.AddSession(options =>
-{
-    //options.IdleTimeout = TimeSpan.FromSeconds(10);
-    //options.Cookie.HttpOnly = true;
-    //options.Cookie.IsEssential = true;
-});
 
 var app = builder.Build();
 
