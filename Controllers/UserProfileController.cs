@@ -93,6 +93,7 @@ namespace AngularProject.Controllers
 
             return new
             {
+                user.Id,
                 user.UserName,
                 user.Email,
                 user.ProfileImage,
