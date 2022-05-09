@@ -14,6 +14,12 @@ namespace AngularProject.Services
         public Task<List<Product>> SearchProduct(string name);
         public Task<List<Product>> FilterProducts(int categoryId);
         public Task<ActionResult<IEnumerable<Product>>> GetProductsWithPormotion();
+        public Task<List<Product>> SortByAlpha(bool ascd);
+        public Task<List<Product>> SortByPrice(bool Cheapest);
+        public Task<List<Product>> SortByBestSellers();
+
+
+
 
 
 

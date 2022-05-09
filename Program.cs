@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using AngularProject.Models;
-using Microsoft.Extensions.Configuration;
 using AngularProject.Data.Cart;
+using AngularProject;
 
 var builder = WebApplication.CreateBuilder(args);
 //3
@@ -31,7 +31,6 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IMailService, SendGridMailService>();
 //builder.Services.AddTransient<IMailService, SendGridMailService>(); //Confirmation Mail
 
-//sc Session
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped(sc => ShoppingCart.GetShoppingCart(sc));
 
@@ -43,13 +42,14 @@ builder.Services.AddSession(options =>
 });
 
 
-builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+builder.Services.AddIdentity<User, IdentityRole>(options =>
     {
         options.Password.RequireDigit = true;
         options.Password.RequireLowercase = true;
         options.Password.RequiredLength = 5;
 
-    }).AddEntityFrameworkStores<ApplicationDbContext>()
+    }).AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(auth => 
@@ -61,14 +61,14 @@ builder.Services.AddAuthentication(auth =>
     {
         options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
         {
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AuthSettings:Key"])),
             ValidateIssuer = false,
             ValidateAudience = false,
             RequireExpirationTime = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AuthSettings:Key"])),
             ValidateIssuerSigningKey = true
         };
 
-    });
+});
 
 builder.Services.AddRazorPages();
 builder.Services.AddHttpContextAccessor();
@@ -98,6 +98,18 @@ builder.Services.AddCors(options =>
 builder.Services.AddDistributedMemoryCache();
 
 
+builder.Services.AddAuthentication()
+   .AddGoogle(googleOptions =>
+   {
+       googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+       googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+   })
+   .AddFacebook(facebookOptions =>
+    {
+        facebookOptions.AppId = "1123745748470433";
+        facebookOptions.AppSecret = "404ba181b770660be894b1c84b01f5d8";
+    });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -118,12 +130,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-app.MapRazorPages();   //so we can access ResetPassword page
-//app.UseEndpoints(endpoints =>
-//{
-//    endpoints.MapRazorPages();
-//    endpoints.MapControllers();
-//});
 
 //4
 app.UseCors(MyAllowSpecificOrigins);

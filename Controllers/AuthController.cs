@@ -1,6 +1,7 @@
 ﻿using AngularProject.Models;
 using AngularProject.Services;
 using AngularProject.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -111,7 +112,7 @@ namespace AngularProject.Controllers
             return BadRequest("Some properties are not valid");
         }
 
-        [HttpPost("Logout")]
+        [HttpGet("Logout")]
         public async Task<IActionResult> Logout()
         {
             if (ModelState.IsValid)
@@ -126,5 +127,45 @@ namespace AngularProject.Controllers
             
             return BadRequest("Some properties are not valid"); // Status code: 400
         }
+
+
+
+        /* ------------------------------------------------ Authorization -------------------------------------- */
+
+        //[Authorize(Roles = "Admin")]
+        [HttpPost("AddRole")]
+        public async Task<IActionResult> AddRole([FromBody] string role)
+        {
+            if (ModelState.IsValid)
+            {
+                var model = new RegisterViewModel() { Role = role };
+                var result = await userService.AddRoleAsync(model);
+
+                if (result.IsSuccess)
+                    return Ok(result); // Status Code: 200 
+
+                return BadRequest(result);
+            }
+
+            return BadRequest("Some properties are not valid"); // Status code: 400
+        }
+
+        //[Authorize(Roles = "Admin")]
+        [HttpGet("GetRoles")]
+        public async Task<IActionResult> GetRoles()
+        {
+            if (ModelState.IsValid)
+            {
+                var result = await userService.GetRolesAsync();
+
+                if (result.IsSuccess)
+                    return Ok(result); // Status Code: 200 
+
+                return BadRequest(result);
+            }
+
+            return BadRequest("Some properties are not valid"); // Status code: 400
+        }
+
     }
 }

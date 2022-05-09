@@ -13,17 +13,19 @@ namespace AngularProject.Services
 {
     public class UserService : IUserService
     {
-        private UserManager<IdentityUser> userManager;
-        private SignInManager<IdentityUser> signInManager;
+        private UserManager<User> userManager;
+        private SignInManager<User> signInManager;
+        private RoleManager<IdentityRole> roleManager;
         private IConfiguration configuration;
         private IMailService mailService;
 
-        public UserService(UserManager<IdentityUser> _userManager, SignInManager<IdentityUser> _signInManager, IConfiguration _configuration, IMailService _mailService)
+        public UserService(UserManager<User> _userManager, SignInManager<User> _signInManager, RoleManager<IdentityRole> _roleManager, IConfiguration _configuration, IMailService _mailService)
         {
             userManager = _userManager;
             signInManager = _signInManager;
             configuration = _configuration;
             mailService = _mailService;
+            roleManager = _roleManager;
         }
         
         public async  Task<UserManagerResponse> RegisterUserAsync(RegisterViewModel model)
@@ -41,25 +43,35 @@ namespace AngularProject.Services
                     IsSuccess = false
                 };
             }
-            var Identityuser = new IdentityUser
+
+            //Roles
+            model.Role = "Customer";
+
+            var identityUser = new User
             {
                 Email = model.Email,
-                UserName = model.Email,
+                UserName = model.Username,
+                ProfileImage = model.ProfileImage,
+                Gender = model.Gender,
+                Role = model.Role,
             };
 
-            var result = await userManager.CreateAsync(Identityuser,model.Password);
-
+            var result = await userManager.CreateAsync(identityUser, model.Password);
+            
+            //roles
+            await userManager.AddToRoleAsync(identityUser, model.Role);
+            
             if (result.Succeeded)
             {
-                var confirmEmailToken = await userManager.GenerateEmailConfirmationTokenAsync(Identityuser);
+                var confirmEmailToken = await userManager.GenerateEmailConfirmationTokenAsync(identityUser);
 
                 var encodedEmailToken = Encoding.UTF8.GetBytes(confirmEmailToken);
 
                 var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
-                string url = $"{configuration["AppUrl"]}/api/auth/confirmemail?userId={Identityuser.Id}&token={validEmailToken}";
+                string url = $"{configuration["AppUrl"]}/api/auth/confirmemail?userId={identityUser.Id}&token={validEmailToken}";
 
-                await mailService.SendEmailAsync(Identityuser.Email, "Confirm your email",$"<h1>Welcome to BonBon Website</h1>"+
+                await mailService.SendEmailAsync(identityUser.Email, "Confirm your email",$"<h1>Welcome to BonBon Website</h1>"+
                     $"<p>Please confirm your email by <a href='{url}'>Clicking here</a></p>");
 
                 return new UserManagerResponse
@@ -100,11 +112,17 @@ namespace AngularProject.Services
                     IsSuccess = false,
                 };
 
+            //get role assigned to the user 
+            var role = await userManager.GetRolesAsync(user);
+            IdentityOptions options = new IdentityOptions();
+
             var claims = new[]
             {
                 new Claim("Email", model.Email),
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(options.ClaimsIdentity.RoleClaimType, role.FirstOrDefault())
             };
+
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["AuthSettings:Key"]));
 
@@ -117,7 +135,7 @@ namespace AngularProject.Services
 
             return new UserManagerResponse
             {
-                Message = tokenAsString,
+                Token = tokenAsString,
                 IsSuccess = true,
                 ExpireDate = token.ValidTo
             };
@@ -234,10 +252,59 @@ namespace AngularProject.Services
             };
         }
 
-        public Task<IdentityUser> UserExistAsync(string id)
+        public Task<User> UserExistAsync(string id)
         {
             var user = userManager.FindByIdAsync(id);
             return user;
+        }
+
+
+        /* ------------------------------------------------ Authorization -------------------------------------- */
+
+        public async Task<UserManagerResponse> AddRoleAsync(RegisterViewModel model)
+        {
+            if (model == null || model.Role == "")
+            {
+                throw new NullReferenceException("Role is missing");
+            }
+
+            if (await roleManager.RoleExistsAsync(model.Role))
+            {
+                return new UserManagerResponse
+                {
+                    Message = "Role already exists",
+                    IsSuccess = true,
+                };
+            }
+
+            var role = new IdentityRole() { Name = model.Role };
+            var result = await roleManager.CreateAsync(role);
+            if (result.Succeeded)
+            {
+                return new UserManagerResponse
+                {
+                    Message = "Role added successfully",
+                    IsSuccess = true
+                };
+            }
+
+            return new UserManagerResponse
+            {
+                Message = "Something went wrong",
+                IsSuccess = false,
+                Errors = result.Errors.Select(e => e.Description),
+            };
+        }
+
+        public async Task<UserManagerResponse> GetRolesAsync()
+        {
+            var roles = roleManager.Roles.Select(x => x.Name).ToList();
+
+            return new UserManagerResponse
+            {
+                Roles = roles,
+                IsSuccess = true
+            };
         }
     }
 }

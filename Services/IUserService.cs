@@ -5,6 +5,7 @@ namespace AngularProject.Services
 {
     public interface IUserService
     {
+        /* ---------------------- Authentication -------------------- */
         Task<UserManagerResponse> RegisterUserAsync(RegisterViewModel model);
         Task<UserManagerResponse> LoginUserAsync(LoginViewModel model);
         Task<UserManagerResponse> ConfirmEmailASync(string userId, string token);
@@ -12,6 +13,11 @@ namespace AngularProject.Services
         Task<UserManagerResponse> ResetPasswordASync(ResetPasswordViewModel model);
         Task<UserManagerResponse> LogoutUserAsync();
         //Exist
-        Task<IdentityUser> UserExistAsync(string id);
+        Task<User> UserExistAsync(string id);
+
+
+        /* ---------------------- Authorization -------------------- */
+        Task<UserManagerResponse> AddRoleAsync(RegisterViewModel model);
+        Task<UserManagerResponse> GetRolesAsync();
     }
 }

@@ -10,11 +10,13 @@ using AngularProject.Models;
 using AngularProject.Data.Cart;
 using AngularProject.Services;
 using AngularProject.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AngularProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class OrdersController : ControllerBase
     {
         //Add private readonly IProductService _productService;
@@ -36,15 +38,33 @@ namespace AngularProject.Controllers
         }
 
         [HttpGet]
+        //authorize to admin
         public async Task<IActionResult> getAllOrders()
         {
             //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             //string userRole = User.FindFirstValue(ClaimTypes.Role);
             //var orders = await orderRepository.GetOrderByUserIdRoleAsync(userId, userRole);
 
+            
+
             var orders = await _orderService.GetAllOrders();
             return Ok(orders);
             
+        }
+
+
+        [HttpGet("UserOrders/{userID}")]
+        public async Task<IActionResult> getUserID(string userID)
+        {
+            //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //string userRole = User.FindFirstValue(ClaimTypes.Role);
+            //var orders = await orderRepository.GetOrderByUserIdRoleAsync(userId, userRole);
+
+
+
+            var orders = await _orderService.GetUSerOrders(userID);
+            return Ok(orders);
+
         }
 
         [HttpGet("GetShoppingCartItems")]
