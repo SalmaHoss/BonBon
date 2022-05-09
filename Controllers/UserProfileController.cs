@@ -48,21 +48,32 @@ namespace AngularProject.Controllers
         }
 
         //[Authorize(Roles = "Admin, Customer")]
-        [HttpGet("GetUser/{id}")]
-        public async Task<Object> GetUserProfile(string id)
+        [HttpGet("GetUser/{email}")]
+        public async Task<Object> GetUserProfile(string email)
         {
-            var user = await userManager.FindByIdAsync(id);
+            var user = await userManager.FindByEmailAsync(email);
 
             if (user == null)
                 throw new KeyNotFoundException("User not found");
+
+            if (user.Role == "Admin")
+            {
+                return new
+                {
+                    user.UserName,
+                    user.Email,
+                    user.ProfileImage,
+                    user.Gender,
+                    user.Role
+                };
+            }
 
             return new
             {
                 user.UserName,
                 user.Email,
                 user.ProfileImage,
-                user.Gender,
-                user.Role
+                user.Gender
             };
         }
 
@@ -114,12 +125,12 @@ namespace AngularProject.Controllers
         }
 
         //[Authorize(Roles ="Admin, Customer")]
-        [HttpPut("EditUser/{id}")]
-        public async Task<Object> EditUserProfile(string id, RegisterViewModel _user)
+        [HttpPut("EditUser/{email}")]
+        public async Task<Object> EditUserProfile(string email, RegisterViewModel _user)
         {
             //string userId = User.Claims.First(c => c.Type == "UserID").Value;
 
-            var user = await userManager.FindByIdAsync(id);
+            var user = await userManager.FindByEmailAsync(email);
 
             if (user == null)
                 throw new KeyNotFoundException("User not found");
@@ -141,10 +152,10 @@ namespace AngularProject.Controllers
         }
 
         //[Authorize(Roles = "Admin")]
-        [HttpDelete("DeleteUser/{id}")]
-        public async Task<IActionResult> DeleteUserProfile(string id)
+        [HttpDelete("DeleteUser/{email}")]
+        public async Task<IActionResult> DeleteUserProfile(string email)
         {
-            var user = await userManager.FindByIdAsync(id);
+            var user = await userManager.FindByEmailAsync(email);
             await userManager.DeleteAsync(user);
             return Ok(new { message = "User deleted successfully" });
         }

@@ -112,7 +112,7 @@ namespace AngularProject.Controllers
             return BadRequest("Some properties are not valid");
         }
 
-        [HttpPost("Logout")]
+        [HttpGet("Logout")]
         public async Task<IActionResult> Logout()
         {
             if (ModelState.IsValid)
