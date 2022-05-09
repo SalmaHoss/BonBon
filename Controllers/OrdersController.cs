@@ -62,7 +62,7 @@ namespace AngularProject.Controllers
 
 
 
-            var orders = await _orderService.GetUSerOrders(userID);
+            var orders = await _orderService.GetOrdersByUserIdAsync(userID);
             return Ok(orders);
 
         }
