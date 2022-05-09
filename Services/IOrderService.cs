@@ -10,6 +10,7 @@ namespace AngularProject.Services
         public Task UpdateOrderState(int orderid, OrderState state);
         public Task<List<Order>> GetUSerOrders(string userId);
 
+        public Task<List<Order>> GetOrderDetailsAsync(int Id);
     }
 }
 
