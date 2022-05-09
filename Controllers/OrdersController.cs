@@ -44,6 +44,8 @@ namespace AngularProject.Controllers
             //string userRole = User.FindFirstValue(ClaimTypes.Role);
             //var orders = await orderRepository.GetOrderByUserIdRoleAsync(userId, userRole);
 
+            
+
             var orders = await _orderService.GetAllOrders();
             return Ok(orders);
             
