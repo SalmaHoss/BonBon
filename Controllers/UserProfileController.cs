@@ -142,11 +142,11 @@ namespace AngularProject.Controllers
         }
 
         //[Authorize(Roles ="Admin")]
-        [HttpPut("EditRole/{id}")]
-        public async Task<Object> EditRole(string id, User _user)
+        [HttpPut("EditRole/{email}")]
+        public async Task<Object> EditRole(string email, User _user)
         {
 
-            var user = await userManager.FindByIdAsync(id);
+            var user = await userManager.FindByEmailAsync(email);
 
             if (user == null)
                 return null;
