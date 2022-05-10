@@ -129,26 +129,38 @@ namespace AngularProject.Controllers
         [HttpPut("EditUser/{id}")]
         public async Task<Object> EditUserProfile(string id, User _user)
         {
-            //string userId = User.Claims.First(c => c.Type == "UserID").Value;
 
             var user = await userManager.FindByIdAsync(id);
 
             if (user == null)
-                throw new KeyNotFoundException("User not found");
+                return null;
 
-            //await userManager.RemoveFromRoleAsync(user, user.Role);
 
             user.UserName = _user.UserName;
             user.Email = _user.Email;
             user.ProfileImage = _user.ProfileImage;
-            
-            //user.Gender = _user.Gender;
-            //user.Role = _user.Role;
-
-
             await userManager.UpdateAsync(user);
 
-           // await userManager.AddToRoleAsync(user, _user.Role);
+
+            return user;
+        }
+
+        //[Authorize(Roles ="Admin")]
+        [HttpPut("EditRole/{id}")]
+        public async Task<Object> EditRole(string id, User _user)
+        {
+
+            var user = await userManager.FindByIdAsync(id);
+
+            if (user == null)
+                return null;
+
+            await userManager.RemoveFromRoleAsync(user, user.Role);
+            user.Role = _user.Role;
+  
+            await userManager.UpdateAsync(user);
+
+            await userManager.AddToRoleAsync(user, _user.Role);
 
             return user;
         }
