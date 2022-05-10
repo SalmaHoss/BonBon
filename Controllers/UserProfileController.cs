@@ -11,9 +11,7 @@ namespace AngularProject.Controllers
     [ApiController]
     public class UserProfileController : ControllerBase
     {
-        /// <summary>
-        /// not tested
-        /// </summary>
+        
 
         private ApplicationDbContext context;
         private UserManager<User> userManager;
