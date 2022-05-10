@@ -38,6 +38,7 @@ namespace AngularProject.Controllers
         }
 
         [HttpGet]
+        //authorize to admin
         public async Task<IActionResult> getAllOrders()
         {
             //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -49,6 +50,21 @@ namespace AngularProject.Controllers
             var orders = await _orderService.GetAllOrders();
             return Ok(orders);
             
+        }
+
+
+        [HttpGet("UserOrders/{userID}")]
+        public async Task<IActionResult> getUserID(string userID)
+        {
+            //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            //string userRole = User.FindFirstValue(ClaimTypes.Role);
+            //var orders = await orderRepository.GetOrderByUserIdRoleAsync(userId, userRole);
+
+
+
+            var orders = await _orderService.GetOrdersByUserIdAsync(userID);
+            return Ok(orders);
+
         }
 
         [HttpGet("GetShoppingCartItems")]
@@ -64,6 +80,14 @@ namespace AngularProject.Controllers
             return Ok(products);
         }
 
+        [HttpGet("GetShoppingCartTotal")]
+        public IActionResult GetShoppingCartTotal()
+        {
+            var products = _shoppingCart.GetShoppingCartProducts();
+            _shoppingCart.ShoppingCartProducts = products;
+            var total = _shoppingCart.GetShoppingCartTotal();
+            return Ok(total);
+        }
         [HttpPost("AddItem/{id}")]
         public async Task<IActionResult> AddToShoppingCart(int id)
         {
@@ -123,7 +147,15 @@ namespace AngularProject.Controllers
             return Ok(orders);
 
         }
+        [HttpGet("GetOrderDetails/{id}")]
 
+        public async Task<IActionResult> GetOrderDetails(int id)
+        {
+
+            var orders = await _orderService.GetOrderDetailsAsync(id);
+            return Ok(orders);
+
+        }
 
         //public IActionResult CompleteOrder()
         //{

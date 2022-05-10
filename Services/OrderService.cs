@@ -23,6 +23,13 @@ namespace AngularProject.Services
             return orders;
 
         }
+        public async Task<List<Order>> GetOrderDetailsAsync(int orderId)
+        {
+            var orderDetails = _context.Orders.Include(e => e.OrderProducts).ThenInclude(n => n.Product).Where(n => n.Id == orderId).ToListAsync();
+            return await orderDetails;
+        }
+
+
         public async Task<List<Order>> GetOrdersByUserIdAsync(string userId)
         {    
 
@@ -37,7 +44,8 @@ namespace AngularProject.Services
          
             var order = new Order()
             {
-                UserId = userId
+                UserId = userId,
+                OrderDate = DateTime.Now,
             };
             await _context.Orders.AddAsync(order);
             await _context.SaveChangesAsync();
