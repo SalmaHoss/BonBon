@@ -13,12 +13,10 @@ namespace AngularProject.Controllers
     {
         
 
-        private ApplicationDbContext context;
         private UserManager<User> userManager;
 
-        public UserProfileController(ApplicationDbContext _context, UserManager<User> _userManager)
+        public UserProfileController( UserManager<User> _userManager)
         {
-            context = _context;
             userManager = _userManager;
         }
 
