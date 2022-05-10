@@ -20,7 +20,7 @@ namespace AngularProject.ViewModels
 
         public string Password { get; set; }
 
-        [Required]
+       // [Required]
         [StringLength(50, MinimumLength = 5)]
         public string ConfirmPassword { get; set; }
 

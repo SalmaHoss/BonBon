@@ -32,7 +32,7 @@ namespace AngularProject.Services
         {
             if(model == null)
             {
-                throw new NullReferenceException("Register Model is null");
+                throw null;
 
             }
             if (model.Password != model.ConfirmPassword)

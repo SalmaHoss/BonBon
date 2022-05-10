@@ -126,28 +126,29 @@ namespace AngularProject.Controllers
         }
 
         //[Authorize(Roles ="Admin, Customer")]
-        [HttpPut("EditUser/{email}")]
-        public async Task<Object> EditUserProfile(string email, RegisterViewModel _user)
+        [HttpPut("EditUser/{id}")]
+        public async Task<Object> EditUserProfile(string id, User _user)
         {
             //string userId = User.Claims.First(c => c.Type == "UserID").Value;
 
-            var user = await userManager.FindByEmailAsync(email);
+            var user = await userManager.FindByIdAsync(id);
 
             if (user == null)
                 throw new KeyNotFoundException("User not found");
 
-            await userManager.RemoveFromRoleAsync(user, user.Role);
+            //await userManager.RemoveFromRoleAsync(user, user.Role);
 
-            user.UserName = _user.Username;
+            user.UserName = _user.UserName;
             user.Email = _user.Email;
             user.ProfileImage = _user.ProfileImage;
-            user.Gender = _user.Gender;
-            user.Role = _user.Role;
+            
+            //user.Gender = _user.Gender;
+            //user.Role = _user.Role;
 
 
             await userManager.UpdateAsync(user);
 
-            await userManager.AddToRoleAsync(user, _user.Role);
+           // await userManager.AddToRoleAsync(user, _user.Role);
 
             return user;
         }
