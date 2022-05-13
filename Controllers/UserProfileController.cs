@@ -73,6 +73,27 @@ namespace AngularProject.Controllers
             };
         }
 
+        //[Authorize(Roles = "Admin")]
+        [HttpGet("GetUserById/{id}")]
+        public async Task<Object> GetUserById(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+
+            if (user == null)
+                return null;
+
+           
+                return new
+                {
+                    user.UserName,
+                    user.Email,
+                    user.ProfileImage,
+                    user.Gender,
+                    user.Role
+                };
+          
+        }
+
         [HttpPost("GetUserByEmailforLogin")]
         public async Task<Object> GetUserByEmailforlogin(LoginViewModel model)
         {

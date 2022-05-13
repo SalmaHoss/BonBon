@@ -78,7 +78,7 @@ namespace AngularProject.Controllers
 
         }
 
-        [HttpPost("ForgetPassword")]
+        [HttpGet("ForgetPassword/{email}")]
         public async Task<IActionResult> ForgetPassword(string email)
         {
             if (string.IsNullOrEmpty(email))
