@@ -14,7 +14,8 @@ namespace AngularProject.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    //[Authorize]
+    //Autohorize on function so home page can have some products
     public class ProductsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -154,26 +155,26 @@ namespace AngularProject.Controllers
             return Ok(products);
         }
 
-        [HttpGet("SortProductsByAlpha/{ascending}")]
-        public async Task<IActionResult> SortByAlpha(bool ascending)
+        [HttpGet("SortProductsByAlpha/{ascending}/{CatID}")]
+        public async Task<IActionResult> SortByAlpha(bool ascending, int CatID)
         {
-            var products = await _productService.SortByAlpha(ascending);
+            var products = await _productService.SortByAlpha(ascending,CatID);
 
             return Ok(products);
         }
 
-        [HttpGet("SortProductsByPrice/{Cheapest}")]
-        public async Task<IActionResult> SortByPrice(bool Cheapest)
+        [HttpGet("SortProductsByPrice/{Cheapest}/{CatID}")]
+        public async Task<IActionResult> SortByPrice(bool Cheapest, int CatID)
         {
-            var products = await _productService.SortByPrice(Cheapest);
+            var products = await _productService.SortByPrice(Cheapest, CatID);
 
             return Ok(products);
         }
 
-        [HttpGet("SortBestSeller")]
-        public async Task<IActionResult> SortByBestSeller()
+        [HttpGet("SortBestSeller/{catID}")]
+        public async Task<IActionResult> SortByBestSeller(int catID)
         {
-            var products = await _productService.SortByBestSellers();
+            var products = await _productService.SortByBestSellers(catID);
 
             return Ok(products);
         }
