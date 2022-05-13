@@ -4,8 +4,8 @@ namespace AngularProject.ViewModels
 {
     public class ResetPasswordViewModel
     {
-        [Required]
-        public string Token { get; set; }
+        //[Required]
+        public string? Token { get; set; }
 
         [Required]
         [EmailAddress]

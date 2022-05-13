@@ -11,16 +11,12 @@ namespace AngularProject.Controllers
     [ApiController]
     public class UserProfileController : ControllerBase
     {
-        /// <summary>
-        /// not tested
-        /// </summary>
+        
 
-        private ApplicationDbContext context;
         private UserManager<User> userManager;
 
-        public UserProfileController(ApplicationDbContext _context, UserManager<User> _userManager)
+        public UserProfileController( UserManager<User> _userManager)
         {
-            context = _context;
             userManager = _userManager;
         }
 
@@ -77,6 +73,27 @@ namespace AngularProject.Controllers
             };
         }
 
+        //[Authorize(Roles = "Admin")]
+        [HttpGet("GetUserById/{id}")]
+        public async Task<Object> GetUserById(string id)
+        {
+            var user = await userManager.FindByIdAsync(id);
+
+            if (user == null)
+                return null;
+
+           
+                return new
+                {
+                    user.UserName,
+                    user.Email,
+                    user.ProfileImage,
+                    user.Gender,
+                    user.Role
+                };
+          
+        }
+
         [HttpPost("GetUserByEmailforLogin")]
         public async Task<Object> GetUserByEmailforlogin(LoginViewModel model)
         {
@@ -88,8 +105,7 @@ namespace AngularProject.Controllers
             var result = await userManager.CheckPasswordAsync(user, model.Password);
 
             if(!result)
-                return null;
-
+                return "Wrong Password";
 
             return new
             {
@@ -126,25 +142,38 @@ namespace AngularProject.Controllers
         }
 
         //[Authorize(Roles ="Admin, Customer")]
-        [HttpPut("EditUser/{email}")]
-        public async Task<Object> EditUserProfile(string email, RegisterViewModel _user)
+        [HttpPut("EditUser/{id}")]
+        public async Task<Object> EditUserProfile(string id, User _user)
         {
-            //string userId = User.Claims.First(c => c.Type == "UserID").Value;
+
+            var user = await userManager.FindByIdAsync(id);
+
+            if (user == null)
+                return null;
+
+
+            user.UserName = _user.UserName;
+            user.Email = _user.Email;
+            user.ProfileImage = _user.ProfileImage;
+            await userManager.UpdateAsync(user);
+
+
+            return user;
+        }
+
+        //[Authorize(Roles ="Admin")]
+        [HttpPut("EditRole/{email}")]
+        public async Task<Object> EditRole(string email, User _user)
+        {
 
             var user = await userManager.FindByEmailAsync(email);
 
             if (user == null)
-                throw new KeyNotFoundException("User not found");
+                return null;
 
             await userManager.RemoveFromRoleAsync(user, user.Role);
-
-            user.UserName = _user.Username;
-            user.Email = _user.Email;
-            user.ProfileImage = _user.ProfileImage;
-            user.Gender = _user.Gender;
             user.Role = _user.Role;
-
-
+  
             await userManager.UpdateAsync(user);
 
             await userManager.AddToRoleAsync(user, _user.Role);

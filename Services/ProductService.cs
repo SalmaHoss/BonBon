@@ -64,7 +64,11 @@ namespace AngularProject.Services
 
         public async Task<List<Product>> FilterProducts(int categoryId)
         {
-
+            if(categoryId == 0)
+            {
+                return await Context.Products.
+                Include(C => C.Category).ToListAsync();
+            }
             var products = await Context.Products.
                 Include(C => C.Category).Where(p=>p.CategoryId == categoryId).ToListAsync();
 
@@ -73,47 +77,80 @@ namespace AngularProject.Services
 
         }
 
-        public async Task<List<Product>> SortByAlpha(bool ascd)
+        public async Task<List<Product>> SortByAlpha(bool ascd,int catgoryID)
         {
             //if ascd --> ture --> a --> Z
-
-            if (ascd)
+            if(catgoryID==0 && ascd)
             {
                 var products = await Context.Products.
-                    Include(C => C.Category).OrderBy(p => p.Title).ToListAsync();
+                  Include(C => C.Category).OrderBy(p => p.Title).ToListAsync();
+                return products;
+            }
+            else if(catgoryID==0)
+            {
+                var products = await Context.Products.
+                   Include(C => C.Category).OrderByDescending(p => p.Title).ToListAsync();
+                return products;
+            }
+
+            else if (ascd)
+            {
+                var products = await Context.Products.
+                    Include(C => C.Category).Where(P => P.CategoryId == catgoryID).OrderBy(p => p.Title).ToListAsync();
                 return products;
             }
             else
             {
                 var products = await Context.Products.
-                    Include(C => C.Category).OrderByDescending(p => p.Title).ToListAsync();
+                    Include(C => C.Category).Where(P => P.CategoryId == catgoryID).OrderByDescending(p => p.Title).ToListAsync();
                 return products;
             }
         }
 
-        public async Task<List<Product>> SortByPrice(bool Cheapest)
+        public async Task<List<Product>> SortByPrice(bool Cheapest, int categoryID)
         {
             //if ascd --> ture --> a --> Z
-
-            if (Cheapest)
+            if(categoryID==0 && Cheapest)
             {
                 var products = await Context.Products.
-                    Include(C => C.Category).OrderBy(p => p.Price).ToListAsync();
+                   Include(C => C.Category).OrderBy(p => p.Price).ToListAsync();
                 return products;
             }
-            else
+            else if(categoryID == 0)
             {
                 var products = await Context.Products.
                     Include(C => C.Category).OrderByDescending(p => p.Price).ToListAsync();
                 return products;
             }
-        }
-        public async Task<List<Product>> SortByBestSellers()
-        {
-         
-           var products = await Context.Products.
-                    Include(C => C.Category).OrderByDescending(p => p.OverAllRating).ToListAsync();
+            if (Cheapest)
+            {
+                var products = await Context.Products.
+                    Include(C => C.Category).Where(P => P.CategoryId == categoryID).OrderBy(p => p.Price).ToListAsync();
                 return products;
+            }
+            else
+            {
+                var products = await Context.Products.
+                    Include(C => C.Category).Where(P => P.CategoryId == categoryID).OrderByDescending(p => p.Price).ToListAsync();
+                return products;
+            }
+        }
+        public async Task<List<Product>> SortByBestSellers(int categoryID)
+        {
+            if(categoryID==0)
+            {
+                var products = await Context.Products.
+                   Include(C => C.Category).OrderByDescending(p => p.OverAllRating).ToListAsync();
+                return products;
+            }
+            else
+            {
+                var products = await Context.Products.
+                   Include(C => C.Category).Where(P =>P.CategoryId == categoryID).OrderByDescending(p => p.OverAllRating).ToListAsync();
+                return products;
+            }
+         
+          
             
       
         }
