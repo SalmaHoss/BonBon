@@ -15,7 +15,7 @@ namespace AngularProject.Controllers
     [Route("api/[controller]")]
     [ApiController]
     //[Authorize]
-    //Autohorize on function so home page can have some products
+
     public class ProductsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
