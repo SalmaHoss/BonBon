@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AngularProject.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220509135955_initialCreate")]
-    partial class initialCreate
+    [Migration("20220510151659_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

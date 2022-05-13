@@ -48,7 +48,7 @@ namespace AngularProject.Services
         }
         public async Task<ActionResult<IEnumerable<Product>>> GetProductsWithPormotion()
         {
-            return await Context.Products.Include("Category").Where(p => p.IsPromoted == true).ToListAsync();
+            return await Context.Products.Where(p => p.IsPromoted == true).ToListAsync();
         }
         public async Task<List<Product>> SearchProduct(string name)
         {

@@ -84,16 +84,16 @@ builder.Services.AddSwaggerGen();
 /*
 
 */
-builder.Services.AddCors(options =>
+var corsUrls = new List<string>() { "http://localhost:4200", "https://mylivesite.com" };
+
+builder.Services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
 {
-    options.AddPolicy(MyAllowSpecificOrigins,
-    builder =>
-    {
-        builder.AllowAnyOrigin();
-        builder.AllowAnyMethod();
-        builder.AllowAnyHeader();
-    });
-});
+    builder
+      .AllowAnyMethod() //<--this allows preflight headers required for POST
+      .AllowAnyHeader() //<--accepts headers 
+      .AllowCredentials() //<--lets your app send auth credentials
+      .WithOrigins(corsUrls.ToArray()); //<--this is the important line
+}));
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -125,13 +125,12 @@ app.UseSession();
 
 app.UseStaticFiles(); //so we can access ConfirmEmail.html in wwwroot
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
 
 //4
-app.UseCors(MyAllowSpecificOrigins);
+app.UseCors("CorsPolicy");
 
 app.Run();

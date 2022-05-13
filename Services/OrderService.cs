@@ -1,4 +1,5 @@
-﻿using AngularProject.Models;
+﻿using AngularProject.Data.Cart;
+using AngularProject.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace AngularProject.Services
@@ -36,9 +37,13 @@ namespace AngularProject.Services
             var orders = _context.Orders.Include(n => n.OrderProducts).ThenInclude(n => n.Product).Where(n => n.UserId == userId).ToListAsync();
             return await orders;
         }
-
-     
-
+        
+        public async Task<List<ShoppingCartProduct>> GetshoppingCartIdAsync(string shoppingCartId)
+        {
+            var shoppingCart = _context.ShoppingCartProducts.Where(n => n.ShoppingCartId == shoppingCartId).ToListAsync();
+            return await shoppingCart;
+        }
+        
         public async Task StoreOrder(List<ShoppingCartProduct> shoppingCartProducts, string userId)
         {
          
