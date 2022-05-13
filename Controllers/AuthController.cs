@@ -97,7 +97,7 @@ namespace AngularProject.Controllers
         }
 
         [HttpPost("ResetPassword")]
-        public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordViewModel model)
+        public async Task<IActionResult> ResetPassword( ResetPasswordViewModel model)
         {
             if (ModelState.IsValid)
             {

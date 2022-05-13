@@ -18,7 +18,7 @@ namespace AngularProject.Services
         private RoleManager<IdentityRole> roleManager;
         private IConfiguration configuration;
         private IMailService mailService;
-        string token;
+        public string token { get; set; }
 
         public UserService(UserManager<User> _userManager, SignInManager<User> _signInManager, RoleManager<IdentityRole> _roleManager, IConfiguration _configuration, IMailService _mailService)
         {
@@ -91,7 +91,7 @@ namespace AngularProject.Services
         }
 
      
-            public async Task<UserManagerResponse> LoginUserAsync(LoginViewModel model)
+        public async Task<UserManagerResponse> LoginUserAsync(LoginViewModel model)
         {
             var user = await userManager.FindByEmailAsync(model.Email);
 
@@ -186,16 +186,16 @@ namespace AngularProject.Services
                     Message = "No user associated with this email"
                 };
             }
-
+            
             token = await userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = Encoding.UTF8.GetBytes(token);
 
             var validToken = WebEncoders.Base64UrlEncode(encodedToken);
 
-            string url = $"{configuration["AppUrl"]}/ResetPassword?email={email}&token={validToken}";
+            string url = $"http://localhost:4200/ResetPassword?email={email}&token={validToken}";
 
             await mailService.SendEmailAsync(email, "Reset Password", "<h1>Follow the instructions to reset your password</h1>" +
-                $"<p>To reset your password <a href='http://localhost:4200/ResetPassword/{email}'>Click here</a></p>");
+                $"<p>To reset your password <a href='{url}'>Click here</a></p>");
 
             return new UserManagerResponse
             {
@@ -223,7 +223,8 @@ namespace AngularProject.Services
                     Message = "Password doesn't match its confirmation",
                 };
 
-            var decodedToken = WebEncoders.Base64UrlDecode(token);
+            //model.Token = token;
+            var decodedToken = WebEncoders.Base64UrlDecode(model.Token);
             string normalToken = Encoding.UTF8.GetString(decodedToken);
 
             var result = await userManager.ResetPasswordAsync(user, normalToken, model.NewPassword);
