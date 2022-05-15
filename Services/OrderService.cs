@@ -63,12 +63,12 @@ namespace AngularProject.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateOrderState(int orderid, OrderState state)
+        public async Task UpdateOrderState(int orderid, string state)
         {
             var order = await _context.Orders.FindAsync(orderid);
             if (order != null)
             {
-                order.State = state;
+                order.State = (OrderState)Enum.Parse(typeof(OrderState), state);
                 await _context.SaveChangesAsync();
             }
             

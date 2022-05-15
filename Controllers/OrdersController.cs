@@ -132,8 +132,8 @@ namespace AngularProject.Controllers
             return NoContent();
         }
 
-        [HttpPost("changeOrderStateById/{id}")]
-        public async Task<IActionResult> ChangeOrderState(int id, OrderState state)
+        [HttpPut("changeOrderStateById/{id}")]
+        public async Task<IActionResult> ChangeOrderState(int id,[FromBody] string state)
         {            
             await _orderService.UpdateOrderState(id, state);
 
