@@ -11,6 +11,7 @@ using AngularProject.Data.Cart;
 using AngularProject.Services;
 using AngularProject.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 
 namespace AngularProject.Controllers
 {
@@ -24,16 +25,20 @@ namespace AngularProject.Controllers
         private readonly IProductService _productService;
         private readonly IOrderService _orderService;
         private readonly IUserService _userService;
+        private UserManager<User> userManager;
 
-        public OrdersController(ShoppingCart shoppingCart,
+        public OrdersController(ShoppingCart shoppingCart, UserManager<User> _userManager,
             IProductService productService,
             IOrderService orderService
             , IUserService userService)
         {
+            //what is your id
             _shoppingCart = shoppingCart;
             _productService = productService;
             _orderService = orderService;
             _userService = userService;
+            userManager = _userManager;
+
 
         }
 
@@ -67,66 +72,95 @@ namespace AngularProject.Controllers
 
         }
 
-        [HttpGet("GetShoppingCartItems")]
-        public IActionResult GetShoppingCartItems()
+        [HttpGet("GetShoppingCartItems/{ShoppingCartId}")]
+        public IActionResult GetShoppingCartItems(string ShoppingCartId)
         {
-            var products = _shoppingCart.GetShoppingCartProducts();
+            var products = _shoppingCart.GetShoppingCartProducts(ShoppingCartId);
             _shoppingCart.ShoppingCartProducts = products;
-            //var response = new ShoppingCartVM()
-            //{
-            //    ShoppingCart = _shoppingCart,
-            //    ShoppingCartTotal = (double)_shoppingCart.GetShoppingCartTotal()
-            //};
-            return Ok(products);
+      
+            return Ok(products); 
+        }
+        [HttpGet("GetShoppingCart")]
+        public IActionResult GetShoppingCart()
+        {
+            var response = new ShoppingCartVM()
+            {
+                ShoppingCart = _shoppingCart,
+                ShoppingCartTotal = (double)_shoppingCart.GetShoppingCartTotal()
+            };
+            return Ok(response);
         }
 
-        [HttpGet("GetShoppingCartTotal")]
-        public IActionResult GetShoppingCartTotal()
+        [HttpGet("GetShoppingCartTotal/{shoppingCartId}")]
+        public async Task<IActionResult> GetShoppingCartTotal(string shoppingCartId)
         {
-            var products = _shoppingCart.GetShoppingCartProducts();
-            _shoppingCart.ShoppingCartProducts = products;
+            _shoppingCart.ShoppingCartId = shoppingCartId;
+            _shoppingCart.ShoppingCartProducts = await _orderService.GetshoppingCartIdAsync(shoppingCartId);
+
             var total = _shoppingCart.GetShoppingCartTotal();
             return Ok(total);
         }
-        [HttpPost("AddItem/{id}")]
-        public async Task<IActionResult> AddToShoppingCart(int id)
+        [HttpPost("AddItem/{id}/{shoppingCartId}")]
+        //tried  to send it in body as best practise we keda but faild
+        public async Task<IActionResult> AddToShoppingCart(int id, string shoppingCartId)
         {
             var product = await _productService.GetDetails(id);
+            _shoppingCart.ShoppingCartId = shoppingCartId;
+            _shoppingCart.ShoppingCartProducts = await _orderService.GetshoppingCartIdAsync(shoppingCartId);
 
             if (product!= null)
             {
                 _shoppingCart.AddProductToCart(product);
+
             }
             return NoContent();
 
         }
 
-        [HttpPost("RemoveItem/{id}")]
-        public async Task<IActionResult> RemoveItemFromShoppingCart(int id)
+        [HttpPost("RemoveItem/{id}/{shoppingCartId}")]
+        public async Task<IActionResult> RemoveItemFromShoppingCart(int id, string shoppingCartId)
         {
             var product = await _productService.GetDetails(id);
+            _shoppingCart.ShoppingCartId = shoppingCartId;
+            _shoppingCart.ShoppingCartProducts = await _orderService.GetshoppingCartIdAsync(shoppingCartId);
 
             if (product != null)
-            {
+            {    //1 srssion - scoprd - init(ordr controllr)
                 _shoppingCart.RemoveProductFromCart(product);
             }
             return NoContent();
-            
 
         }
 
-        [HttpPost("completerOrder/{id}")]
-        public async Task<IActionResult> CompleteOrder(string id)
+        [HttpPost("RemoveItemTotalAmount/{id}/{shoppingCartId}")]
+        public async Task<IActionResult> RemoveItemTotalAmountFromShoppingCart(int id, string shoppingCartId)
         {
-            var user = await _userService.UserExistAsync(id);
+            var product = await _productService.GetDetails(id);
+            _shoppingCart.ShoppingCartId = shoppingCartId;
+            _shoppingCart.ShoppingCartProducts = await _orderService.GetshoppingCartIdAsync(shoppingCartId);
+
+            if (product != null)
+            {    //1 srssion - scoprd - init(ordr controllr)
+                _shoppingCart.RemoveProductTotalAmountFromCart(product);
+            }
+            return NoContent();
+
+        }
+
+        [HttpPost("completerOrder/{email}/{shoppingCartId}")]
+        public async Task<IActionResult> CompleteOrder(string email, string shoppingCartId)
+        {
+            var user = await userManager.FindByEmailAsync(email);
+             _shoppingCart.ShoppingCartId = shoppingCartId;
+          //  _shoppingCart.ShoppingCartProducts = await _orderService.GetshoppingCartIdAsync(shoppingCartId);
+
             if (user == null)
             {
                 return NotFound();
             }
-            var products = _shoppingCart.GetShoppingCartProducts();
+            var products = _shoppingCart.GetShoppingCartProducts(shoppingCartId);
             //string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            await _orderService.StoreOrder(products, id);
+            await _orderService.StoreOrder(products, user.Id);
             await _shoppingCart.ClearShoppingCartAsync();
 
             return NoContent();

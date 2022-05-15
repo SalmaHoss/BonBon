@@ -3,15 +3,19 @@ using AngularProject.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace AngularProject.Data.Cart
 {
     public class ShoppingCart
     {
-         public string ShoppingCartId { get; set; }
+        //in this session
+        public string ShoppingCartId { get; set; }
          public  List<ShoppingCartProduct> ShoppingCartProducts {get;set;}
-         //Is He gonna use services?
-         public ApplicationDbContext _Context { get; set; }
+        //Is He gonna use services?
+        [IgnoreDataMember]
+        public ApplicationDbContext _Context { get; set; }
 
         public ShoppingCart(ApplicationDbContext context)
         {
@@ -28,9 +32,11 @@ namespace AngularProject.Data.Cart
             return new ShoppingCart(ctxt) { ShoppingCartId = cartId };
         }
 
-        public  List<ShoppingCartProduct> GetShoppingCartProducts()
+        
+  
+        public List<ShoppingCartProduct> GetShoppingCartProducts(string ShoppingCartCurrentId)
         {
-            return  ShoppingCartProducts ?? _Context.ShoppingCartProducts.Where(n => n.ShoppingCartId == ShoppingCartId).Include(n=>n.Product).ToList();
+            return  ShoppingCartProducts ?? _Context.ShoppingCartProducts.Include(n => n.Product).Where(n => n.ShoppingCartId == ShoppingCartCurrentId).ToList();
         }
         public decimal GetShoppingCartTotal()
         {
@@ -39,7 +45,7 @@ namespace AngularProject.Data.Cart
 
 
         public void AddProductToCart(Product product)
-        {
+        {                                              
             var shoppingCartProduct = _Context.ShoppingCartProducts.FirstOrDefault(n => n.Product.Id == product.Id && n.ShoppingCartId == ShoppingCartId);
             if(shoppingCartProduct == null)
             {
@@ -75,11 +81,25 @@ namespace AngularProject.Data.Cart
             }
             _Context.SaveChanges();
         }
+
+
         public async Task ClearShoppingCartAsync()
         {
             var items = await _Context.ShoppingCartProducts.Where(n => n.ShoppingCartId == ShoppingCartId).ToListAsync();
             _Context.ShoppingCartProducts.RemoveRange(items);
             await _Context.SaveChangesAsync();
+        }
+
+        internal void RemoveProductTotalAmountFromCart(Product product)
+        {
+            var shoppingCartProduct = _Context.ShoppingCartProducts.FirstOrDefault(n => n.Product.Id == product.Id && n.ShoppingCartId == ShoppingCartId);
+            if (shoppingCartProduct != null)
+            {
+           
+                    _Context.ShoppingCartProducts.Remove(shoppingCartProduct);
+                
+            }
+            _Context.SaveChanges();
         }
     }
 }

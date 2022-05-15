@@ -105,8 +105,7 @@ namespace AngularProject.Controllers
             var result = await userManager.CheckPasswordAsync(user, model.Password);
 
             if(!result)
-                return null;
-
+                return "Wrong Password";
 
             return new
             {
