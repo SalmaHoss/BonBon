@@ -152,7 +152,7 @@ namespace AngularProject.Controllers
         {
             var user = await userManager.FindByEmailAsync(email);
              _shoppingCart.ShoppingCartId = shoppingCartId;
-            _shoppingCart.ShoppingCartProducts = await _orderService.GetshoppingCartIdAsync(shoppingCartId);
+          //  _shoppingCart.ShoppingCartProducts = await _orderService.GetshoppingCartIdAsync(shoppingCartId);
 
             if (user == null)
             {

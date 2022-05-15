@@ -36,7 +36,7 @@ namespace AngularProject.Data.Cart
   
         public List<ShoppingCartProduct> GetShoppingCartProducts(string ShoppingCartCurrentId)
         {
-            return  ShoppingCartProducts ?? _Context.ShoppingCartProducts.Where(n => n.ShoppingCartId == ShoppingCartCurrentId).Include(n=>n.Product).ToList();
+            return  ShoppingCartProducts ?? _Context.ShoppingCartProducts.Include(n => n.Product).Where(n => n.ShoppingCartId == ShoppingCartCurrentId).ToList();
         }
         public decimal GetShoppingCartTotal()
         {
