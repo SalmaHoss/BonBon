@@ -101,7 +101,7 @@ namespace AngularProject.Controllers
             return Ok(total);
         }
         [HttpPost("AddItem/{id}/{shoppingCartId}")]
-        //tried  to send it in body as best practise we keda but faild
+        //tried  to send it in body as best practise we keda but failed
         public async Task<IActionResult> AddToShoppingCart(int id, string shoppingCartId)
         {
             var product = await _productService.GetDetails(id);
