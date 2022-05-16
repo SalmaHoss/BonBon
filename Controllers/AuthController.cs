@@ -132,9 +132,28 @@ namespace AngularProject.Controllers
 
         /* ------------------------------------------------ Authorization -------------------------------------- */
 
+        ////[Authorize(Roles = "Admin")]
+        //[HttpPost("AddRole")]
+        //public async Task<IActionResult> AddRole([FromBody] string role)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        var model = new RegisterViewModel() { Role = role };
+        //        var result = await userService.AddRoleAsync(model);
+
+        //        if (result.IsSuccess)
+        //            return Ok(result); // Status Code: 200 
+
+        //        return BadRequest(result);
+        //    }
+
+        //    return BadRequest("Some properties are not valid"); // Status code: 400
+        //}
+
+
         //[Authorize(Roles = "Admin")]
-        [HttpPost("AddRole")]
-        public async Task<IActionResult> AddRole([FromBody] string role)
+        [HttpGet("AddRole/{role}")]
+        public async Task<IActionResult> AddRole(string role)
         {
             if (ModelState.IsValid)
             {
