@@ -38,9 +38,9 @@ namespace AngularProject.Data.Cart
         {
             return  ShoppingCartProducts ?? _Context.ShoppingCartProducts.Include(n => n.Product).Where(n => n.ShoppingCartId == ShoppingCartCurrentId).ToList();
         }
-        public decimal GetShoppingCartTotal()
+        public decimal GetShoppingCartTotal(string ShoppingCartCurrentId)
         {
-            return _Context.ShoppingCartProducts.Where(n => n.ShoppingCartId == ShoppingCartId).Select(n => n.Product.Price * n.Amount).Sum();
+            return _Context.ShoppingCartProducts.Where(n => n.ShoppingCartId == ShoppingCartCurrentId).Select(n => n.Product.Price * n.Amount).Sum();
         }
 
 

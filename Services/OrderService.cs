@@ -13,6 +13,17 @@ namespace AngularProject.Services
             _context = context;
         }
 
+        public async Task DeleteOrderById(int id)
+        {
+            var order = await _context.Orders.FindAsync(id);
+            if(order != null)
+            {
+                _context.Orders.Remove(order);
+                await _context.SaveChangesAsync();
+            }
+
+        }
+
         public async Task<List<Order>> GetAllOrders()
         {
             // var orders = await _context.Orders.Include(n => n.OrderProducts).ThenInclude(n => n.Product).Include(n => n.User).ToListAsync();
@@ -76,7 +87,6 @@ namespace AngularProject.Services
                 order.State = state;
                 await _context.SaveChangesAsync();
             }
-            
             
         }
 

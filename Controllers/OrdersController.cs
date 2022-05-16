@@ -86,18 +86,15 @@ namespace AngularProject.Controllers
             var response = new ShoppingCartVM()
             {
                 ShoppingCart = _shoppingCart,
-                ShoppingCartTotal = (double)_shoppingCart.GetShoppingCartTotal()
             };
             return Ok(response);
         }
 
         [HttpGet("GetShoppingCartTotal/{shoppingCartId}")]
-        public async Task<IActionResult> GetShoppingCartTotal(string shoppingCartId)
+        public  IActionResult GetShoppingCartTotal(string shoppingCartId)
         {
             _shoppingCart.ShoppingCartId = shoppingCartId;
-            _shoppingCart.ShoppingCartProducts = await _orderService.GetshoppingCartIdAsync(shoppingCartId);
-
-            var total = _shoppingCart.GetShoppingCartTotal();
+            var total = _shoppingCart.GetShoppingCartTotal(shoppingCartId);
             return Ok(total);
         }
         [HttpPost("AddItem/{id}/{shoppingCartId}")]
@@ -106,7 +103,7 @@ namespace AngularProject.Controllers
         {
             var product = await _productService.GetDetails(id);
             _shoppingCart.ShoppingCartId = shoppingCartId;
-            _shoppingCart.ShoppingCartProducts = await _orderService.GetshoppingCartIdAsync(shoppingCartId);
+          //  _shoppingCart.ShoppingCartProducts = await _orderService.GetshoppingCartIdAsync(shoppingCartId);
 
             if (product!= null)
             {
@@ -189,6 +186,14 @@ namespace AngularProject.Controllers
             var orders = await _orderService.GetOrderDetailsAsync(id);
             return Ok(orders);
 
+        }
+        // DELETE: api/Orders/5
+
+        [HttpDelete("DeleteOrder/{id}")]
+        public async Task<IActionResult> DeleteOrder(int id)
+        {
+            await _orderService.DeleteOrderById(id);
+            return NoContent();
         }
 
         //public IActionResult CompleteOrder()
