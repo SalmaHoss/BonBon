@@ -59,7 +59,11 @@ namespace AngularProject.Data.Cart
             }
             else
             {
-                shoppingCartProduct.Amount++;
+                if (shoppingCartProduct.Amount < product.Quantity)
+                    shoppingCartProduct.Amount++;
+                else
+                    return;
+
             }
             _Context.SaveChanges();
         }
