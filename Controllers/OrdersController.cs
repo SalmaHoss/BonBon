@@ -83,10 +83,7 @@ namespace AngularProject.Controllers
         [HttpGet("GetShoppingCart")]
         public IActionResult GetShoppingCart()
         {
-            var response = new ShoppingCartVM()
-            {
-                ShoppingCart = _shoppingCart,
-            };
+            var response = _shoppingCart.ShoppingCartId;
             return Ok(response);
         }
 
