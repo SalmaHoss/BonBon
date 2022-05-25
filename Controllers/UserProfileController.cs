@@ -78,6 +78,7 @@ namespace AngularProject.Controllers
         [HttpGet("GetUserById/{id}")]
         public async Task<Object> GetUserById(string id)
         {
+         
             var user = await userManager.FindByIdAsync(id);
 
             if (user == null)

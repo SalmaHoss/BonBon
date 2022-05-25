@@ -11,6 +11,7 @@ namespace AngularProject.Services
 
         public Task<List<Order>> GetOrderDetailsAsync(int Id);
         public Task<List<ShoppingCartProduct>> GetshoppingCartIdAsync(string shoppingCartId);
+        public Task<Boolean> DeleteShoppingCartIdAsync(string Id);
         Task DeleteOrderById(int id);
     }
 }
