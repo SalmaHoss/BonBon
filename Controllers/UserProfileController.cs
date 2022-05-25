@@ -52,24 +52,25 @@ namespace AngularProject.Controllers
             if (user == null)
                 throw new KeyNotFoundException("User not found");
 
-            if (user.Role == "Admin")
-            {
-                return new
-                {
-                    user.UserName,
-                    user.Email,
-                    user.ProfileImage,
-                    user.Gender,
-                    user.Role
-                };
-            }
+            //if (user.Role == "Admin")
+            //{
+            //    return new
+            //    {
+            //        user.UserName,
+            //        user.Email,
+            //        user.ProfileImage,
+            //        user.Gender,
+            //        user.Role
+            //    };
+            //}
 
             return new
             {
                 user.UserName,
                 user.Email,
                 user.ProfileImage,
-                user.Gender
+                user.Gender,
+                user.Role
             };
         }
 
