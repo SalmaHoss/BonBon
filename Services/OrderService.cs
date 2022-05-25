@@ -54,7 +54,23 @@ namespace AngularProject.Services
             var shoppingCart = _context.ShoppingCartProducts.Where(n => n.ShoppingCartId == shoppingCartId).ToListAsync();
             return await shoppingCart;
         }
-        
+
+        public async Task<Boolean> DeleteShoppingCartIdAsync(string shoppingCartId)
+        {
+            var shoppingCart = _context.ShoppingCartProducts.Where(n => n.ShoppingCartId == shoppingCartId).FirstOrDefault();
+            if (shoppingCart != null)
+            {
+                _context.ShoppingCartProducts.Remove(shoppingCart);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            else
+            {
+
+                return false;
+            }
+        }
+
         public async Task StoreOrder(List<ShoppingCartProduct> shoppingCartProducts, string userId)
         {
          

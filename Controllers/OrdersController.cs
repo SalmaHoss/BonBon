@@ -41,6 +41,18 @@ namespace AngularProject.Controllers
 
 
         }
+        [HttpDelete("DeleteCart/{ShoppingCartId}")]
+        public async Task<Boolean> DeleteShoppingCart(string ShoppingCartId)
+        {
+            var cart =  _orderService.DeleteShoppingCartIdAsync(ShoppingCartId);
+
+            if(cart == null)
+            {
+                return false;
+            }
+         return true;
+
+        }
 
         [HttpGet]
         //authorize to admin
