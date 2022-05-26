@@ -16,7 +16,7 @@ namespace AngularProject.Services
         {
             var apiKey = configuration["SendGridAPIKey"];
             var client = new SendGridClient(apiKey);
-            var from = new EmailAddress("omnia.lashen15@gmail.com", "BonBon");
+            var from = new EmailAddress("nosamaosman@gmail.com", "BonBon");
             var to = new EmailAddress(toEmail);
             var msg = MailHelper.CreateSingleEmail(from, to, subject, content, content);
             var response = await client.SendEmailAsync(msg);
