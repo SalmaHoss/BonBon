@@ -100,6 +100,7 @@ namespace AngularProject.Services
             var order = await _context.Orders.FindAsync(orderid);
             if (order != null)
             {
+                //Single Responsability Violated!
                 order.State = (OrderState)Enum.Parse(typeof(OrderState), state);
                 if(order.State == OrderState.Accepted)
                 {
