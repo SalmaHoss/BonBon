@@ -101,6 +101,16 @@ namespace AngularProject.Services
             if (order != null)
             {
                 order.State = (OrderState)Enum.Parse(typeof(OrderState), state);
+                if(order.State == OrderState.Accepted)
+                {
+                    var orderProducts = await _context.OrderProducts.Where(order => order.OrderId == orderid).ToListAsync();
+                    foreach(var orderProduct in orderProducts)
+                    {
+                        Product product = await _context.Products.FirstOrDefaultAsync(p => p.Id == orderProduct.ProductId);
+                        product.Quantity -= orderProduct.Amount;
+                    //    _context.Products.Update(product);
+                    }
+                 }
                 await _context.SaveChangesAsync();
             }
             
